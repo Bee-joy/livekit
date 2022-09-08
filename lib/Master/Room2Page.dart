@@ -233,47 +233,47 @@ class _Room2PageState extends State<Room2Page> {
               Row(children: [
                 ControlsWidget(widget.room, widget.room.localParticipant!),
               ]),
-            SizedBox(
-                height: MediaQuery.of(context).size.height * .2,
-                child: ListView.builder(
-                    itemCount: 150,
-                    itemBuilder: (BuildContext context, index) {
-                      return Text('index $index');
-                    })),
+            // SizedBox(
+            //     height: MediaQuery.of(context).size.height * .2,
+            //     child: ListView.builder(
+            //         itemCount: 150,
+            //         itemBuilder: (BuildContext context, index) {
+            //           return Text('index $index');
+            //         })),
 
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              height: 70.0,
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: widget._messageBody,
-                      textCapitalization: TextCapitalization.sentences,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      decoration: const InputDecoration.collapsed(
-                        hintText: 'Send a message...',
-                      ),
-                    ),
-                  ),
-                  RawMaterialButton(
-                    onPressed: () {},
-                    elevation: 2.0,
-                    fillColor: const Color(0xFFd1c9f3),
-                    child: const Icon(
-                      Icons.send,
-                      size: 20.0,
-                      color: Colors.white,
-                    ),
-                    padding: const EdgeInsets.all(15.0),
-                    shape: const CircleBorder(),
-                  )
-                ],
-              ),
-            )
+            // Container(
+            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            //   height: 70.0,
+            //   color: Colors.white,
+            //   child: Row(
+            //     children: <Widget>[
+            //       Expanded(
+            //         child: TextField(
+            //           controller: widget._messageBody,
+            //           textCapitalization: TextCapitalization.sentences,
+            //           onChanged: (value) {
+            //             setState(() {});
+            //           },
+            //           decoration: const InputDecoration.collapsed(
+            //             hintText: 'Send a message...',
+            //           ),
+            //         ),
+            //       ),
+            //       RawMaterialButton(
+            //         onPressed: () {},
+            //         elevation: 2.0,
+            //         fillColor: const Color(0xFFd1c9f3),
+            //         child: const Icon(
+            //           Icons.send,
+            //           size: 20.0,
+            //           color: Colors.white,
+            //         ),
+            //         padding: const EdgeInsets.all(15.0),
+            //         shape: const CircleBorder(),
+            //       )
+            //     ],
+            //   ),
+            // )
           ],
         ),
       );

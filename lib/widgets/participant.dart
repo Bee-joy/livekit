@@ -9,8 +9,7 @@ import 'participant_info.dart';
 
 abstract class ParticipantWidget extends StatefulWidget {
   // Convenience method to return relevant widget for participant
-  static ParticipantWidget widgetFor(
-      ParticipantTrack participantTrack) {
+  static ParticipantWidget widgetFor(ParticipantTrack participantTrack) {
     if (participantTrack.participant is LocalParticipant) {
       return LocalParticipantWidget(
           participantTrack.participant as LocalParticipant,
@@ -30,11 +29,8 @@ abstract class ParticipantWidget extends StatefulWidget {
   abstract final VideoTrack? videoTrack;
   abstract final bool isScreenShare;
   final VideoQuality quality;
-  final Room room;
-
   const ParticipantWidget({
     this.quality = VideoQuality.MEDIUM,
-    this.room
     Key? key,
   }) : super(key: key);
 }
@@ -134,7 +130,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
               child: activeVideoTrack != null
                   ? VideoTrackRenderer(
                       activeVideoTrack!,
-                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
                     )
                   : const NoVideoWidget(),
             ),
@@ -151,17 +147,16 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                     height: 30,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 5),
-                      // ignore: prefer_const_literals_to_create_immutables
                       child: Row(children: [
-                        Icon(
+                        const Icon(
                           Icons.people,
                           color: Colors.white,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
                         Text(
-                          room,
+                          "2",
                           style: TextStyle(color: Colors.white),
                         )
                       ]),

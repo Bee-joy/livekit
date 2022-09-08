@@ -318,7 +318,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               )
             else
               RawMaterialButton(
-                onPressed: _disableVideo,
+                onPressed: _enableVideo,
                 child: IconButton(
                   onPressed: _enableVideo,
                   icon: const Icon(

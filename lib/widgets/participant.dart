@@ -205,33 +205,84 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
         enableDrag: false,
         context: context,
         builder: (BuildContext bc) {
-          return SizedBox(
+          return Container(
+              color: Colors.white,
               height: MediaQuery.of(context).size.height * .3,
               child: ListView.builder(
+                  padding: const EdgeInsets.all(0.0),
                   itemCount: widget.participantList.length,
                   itemBuilder: (BuildContext context, index) {
-                    return const ListTile(
-                      title: Text("Dipesh"),
-                      leading: CircleAvatar(
-                          backgroundColor: Colors.black,
+                    return ListTile(
+                      title:
+                          Text(widget.participantList[index].name.toString()),
+                      leading: const CircleAvatar(
+                          backgroundColor: Colors.red,
                           radius: 21,
                           child: CircleAvatar(
                             backgroundColor: Color(0xffE5F5FB),
                             radius: 20,
-                            child: Text(
-                              "D",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
-
-                          //Text
-                          ),
-                      trailing: Icon(
-                        Icons.more_vert,
-                        color: Colors.black,
+                            backgroundImage: NetworkImage(
+                                'https://picsum.photos/id/237/200/300'),
+                          )),
+                      trailing: Wrap(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: widget.participantList[index].roles ==
+                                      'student'
+                                  ? const Icon(Icons.back_hand_outlined)
+                                  : const Text("")),
+                          widget.participantList[index].roles == 'student'
+                              ? const Popup(
+                                  menuList: [
+                                    PopupMenuItem(
+                                        child: ListTile(
+                                      horizontalTitleGap: 10,
+                                      minVerticalPadding: 0.0,
+                                      minLeadingWidth: 10,
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      leading: Icon(Icons.logout),
+                                      title: Text(
+                                        "Allow to talk",
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                    )),
+                                  ],
+                                  icon: Icon(Icons.more_vert),
+                                )
+                              : const Popup(
+                                  menuList: [
+                                    PopupMenuItem(
+                                        padding: EdgeInsets.only(left: 16),
+                                        child: ListTile(
+                                          horizontalTitleGap: 10,
+                                          minLeadingWidth: 10,
+                                          dense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Icon(Icons.event_busy_sharp),
+                                          title: Text(
+                                            "Kick out",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        )),
+                                    PopupMenuItem(
+                                        child: ListTile(
+                                      horizontalTitleGap: 10,
+                                      minVerticalPadding: 0.0,
+                                      minLeadingWidth: 10,
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      leading: Icon(Icons.logout),
+                                      title: Text(
+                                        "Allow to talk",
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                    )),
+                                  ],
+                                  icon: Icon(Icons.more_vert),
+                                ), // icon-2
+                        ],
                       ),
                     );
                   }));
@@ -329,4 +380,18 @@ class RemoteTrackPublicationMenuWidget extends StatelessWidget {
           ],
         ),
       );
+}
+
+class Popup extends StatelessWidget {
+  final List<PopupMenuEntry> menuList;
+  final Widget? icon;
+  const Popup({Key? key, required this.menuList, this.icon}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: ((context) => menuList),
+      icon: icon,
+    );
+  }
 }

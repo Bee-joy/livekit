@@ -257,23 +257,26 @@ class _ControlsWidgetState extends State<ControlsWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 25,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           if (isStudent())
-            RawMaterialButton(
-              onPressed: _raiseHand,
-              child: IconButton(
+            Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: RawMaterialButton(
                 onPressed: _raiseHand,
-                icon: const Icon(Icons.handyman),
-                tooltip: 'un-mute video',
+                child: IconButton(
+                  onPressed: _raiseHand,
+                  icon: const Icon(
+                    Icons.back_hand_outlined,
+                    color: Colors.blue,
+                  ),
+                  tooltip: 'un-mute video',
+                ),
+                shape: const CircleBorder(),
+                elevation: 1.0,
+                fillColor: Colors.grey[200],
               ),
-              shape: const CircleBorder(),
-              elevation: 1.0,
-              fillColor: Colors.red,
             ),
           if (participant.permissions.canPublish)
             if (participant.isMicrophoneEnabled())
@@ -309,7 +312,10 @@ class _ControlsWidgetState extends State<ControlsWidget> {
                 onPressed: _disableVideo,
                 child: IconButton(
                   onPressed: _disableVideo,
-                  icon: const Icon(Icons.video_call),
+                  icon: const Icon(
+                    Icons.video_call,
+                    color: Colors.white,
+                  ),
                   tooltip: 'mute video',
                 ),
                 shape: const CircleBorder(),

@@ -11,15 +11,12 @@ String participantOptionToJson(ParticipantOption data) =>
     json.encode(data.toJson());
 
 class ParticipantOption {
-  ParticipantOption({
-    this.name,
-    this.image,
-    this.raiseHand,
-  });
+  ParticipantOption({this.name, this.image, this.raiseHand, this.roles});
 
   String? name;
   String? image;
   bool? raiseHand;
+  String? roles;
 
   factory ParticipantOption.fromJson(Map<String, dynamic> json) =>
       ParticipantOption(

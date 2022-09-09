@@ -1,4 +1,5 @@
 import 'package:dipesh/ApiService/ApiService.dart';
+import 'package:dipesh/Master/Helper.dart';
 import 'package:dipesh/Model/UserMetaData.dart';
 import 'package:dipesh/Model/participantoptions.dart';
 import 'package:dipesh/widgets/controls.dart';
@@ -124,6 +125,7 @@ class _Room2PageState extends State<Room2Page> {
       print("METADATA" + participent!.metadata!);
     List<ParticipantTrack> userMediaTracks = [];
     List<ParticipantTrack> screenTracks = [];
+
     for (var participant in widget.room.participants.values) {
       for (var t in participant.videoTracks) {
         if (t.isScreenShare) {
@@ -191,21 +193,35 @@ class _Room2PageState extends State<Room2Page> {
     setState(() {
       participantTracks = [...screenTracks, ...userMediaTracks];
 
-      widget.room.participants.values
-          .map((participant) => addParticipant(participant));
-      // UserMetaData metadata = UserMetaData.fromJson(
-      //     jsonDecode(widget.room.localParticipant!.metadata!));
-      // participantsList.add(ParticipantOption(
-      //     name: metadata.name!, image: "", raiseHand: metadata.raiseHand));
+      Iterable<RemoteParticipant> remoteparticipants =
+          widget.room.participants.values;
+      for (int i = 0; i < remoteparticipants.length; i++) {
+        addParticipant(remoteparticipants.elementAt(i));
+      }
+
+      UserMetaData metadata = UserMetaData.fromJson(
+          jsonDecode(widget.room.localParticipant!.metadata!));
+
+      if (!participantsList.map((item) => item.name).contains(metadata.name)) {
+        participantsList.add(ParticipantOption(
+            name: metadata.name!,
+            image: "",
+            raiseHand: metadata.raiseHand,
+            roles: metadata.roles![0].toString()));
+      }
     });
   }
 
   void addParticipant(Participant participant) {
     UserMetaData metadata =
         UserMetaData.fromJson(jsonDecode(participant.metadata!));
-
-    participantsList.add(ParticipantOption(
-        name: metadata.name!, image: "", raiseHand: metadata.raiseHand));
+    if (!participantsList.map((item) => item.name).contains(metadata.name)) {
+      participantsList.add(ParticipantOption(
+          name: metadata.name!,
+          image: "",
+          raiseHand: metadata.raiseHand,
+          roles: metadata.roles![0].toString()));
+    }
   }
 
   @override
@@ -216,7 +232,11 @@ class _Room2PageState extends State<Room2Page> {
                 child: participantTracks.isNotEmpty
                     ? ParticipantWidget.widgetFor(
                         participantTracks.first, participantsList)
-                    : Container()),
+                    : Container(
+                        color: Colors.grey,
+                        child: Helper.getParticipantDetails(
+                            context, participantsList),
+                      )),
             // SizedBox(
             //   height: 50,
             //   child: ListView.builder(

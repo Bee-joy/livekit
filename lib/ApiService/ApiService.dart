@@ -14,7 +14,6 @@ class ApiService {
   Future<User> getUser(String name) async {
     data['name'] = name;
     String url = Master.pwCommunity;
-
     try {
       Response responsePost = await dio.post(url + "/login", data: data);
       return User.fromJson(responsePost.data);

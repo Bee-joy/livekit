@@ -260,15 +260,15 @@ class _ControlsWidgetState extends State<ControlsWidget> {
       padding: const EdgeInsets.symmetric(
         vertical: 25,
       ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           if (isStudent())
             RawMaterialButton(
               onPressed: _raiseHand,
               child: IconButton(
                 onPressed: _raiseHand,
-                icon: const Icon(Icons.mic_off),
+                icon: const Icon(Icons.handyman),
                 tooltip: 'un-mute video',
               ),
               shape: const CircleBorder(),

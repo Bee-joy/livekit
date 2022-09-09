@@ -30,18 +30,20 @@ class LoginBloc {
       loginSink.add({
         'status': 'processing',
       });
-
       final room = Room();
-      // Create a Listener before connecting
       final listener = room.createListener();
       final parListener = room.participants.forEach((key, value) {
         value.createListener();
       });
-      await apiService.getUser(event.username).then((user) => apiService
+      User user = await apiService.getUser(event.username);
+      if (user.statusCode != 200 && user.statusCode != 200) {
+        loginSink.add({'status': 'failed'});
+      }
+      await apiService
           .getToken(user.data!.userId!, "6315a1993fbbdd1bcffasb741")
           .then((value) => {
                 room.connect(
-                    'ws://ec2-13-235-95-238.ap-south-1.compute.amazonaws.com:7880',
+                    'ws://ec2-15-207-86-53.ap-south-1.compute.amazonaws.com:7880',
                     value.data!.token!,
                     roomOptions: const RoomOptions(
                       defaultScreenShareCaptureOptions:
@@ -52,7 +54,7 @@ class LoginBloc {
                     event.context,
                     MaterialPageRoute(
                         builder: (_) => Room2Page(room, listener)))
-              }));
+              });
     }
   }
 }

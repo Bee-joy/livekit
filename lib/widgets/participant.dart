@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:dipesh/Model/UserMetaData.dart';
+import 'package:dipesh/Model/participantoptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:livekit_client/livekit_client.dart';
@@ -9,14 +10,17 @@ import 'participant_info.dart';
 
 abstract class ParticipantWidget extends StatefulWidget {
   // Convenience method to return relevant widget for participant
-  static ParticipantWidget widgetFor(ParticipantTrack participantTrack) {
+  static ParticipantWidget widgetFor(
+      ParticipantTrack participantTrack, List<ParticipantOption> list) {
     if (participantTrack.participant is LocalParticipant) {
       return LocalParticipantWidget(
+          list,
           participantTrack.participant as LocalParticipant,
           participantTrack.videoTrack,
           participantTrack.isScreenShare);
     } else if (participantTrack.participant is RemoteParticipant) {
       return RemoteParticipantWidget(
+          list,
           participantTrack.participant as RemoteParticipant,
           participantTrack.videoTrack,
           participantTrack.isScreenShare);
@@ -28,8 +32,9 @@ abstract class ParticipantWidget extends StatefulWidget {
   abstract final Participant participant;
   abstract final VideoTrack? videoTrack;
   abstract final bool isScreenShare;
+  abstract final List<ParticipantOption> participantList;
   final VideoQuality quality;
-  const ParticipantWidget({
+  ParticipantWidget({
     this.quality = VideoQuality.MEDIUM,
     Key? key,
   }) : super(key: key);
@@ -42,8 +47,10 @@ class LocalParticipantWidget extends ParticipantWidget {
   final VideoTrack? videoTrack;
   @override
   final bool isScreenShare;
-
-  const LocalParticipantWidget(
+  @override
+  final List<ParticipantOption> participantList;
+  LocalParticipantWidget(
+    this.participantList,
     this.participant,
     this.videoTrack,
     this.isScreenShare, {
@@ -61,8 +68,11 @@ class RemoteParticipantWidget extends ParticipantWidget {
   final VideoTrack? videoTrack;
   @override
   final bool isScreenShare;
+  @override
+  final List<ParticipantOption> participantList;
 
-  const RemoteParticipantWidget(
+  RemoteParticipantWidget(
+    this.participantList,
     this.participant,
     this.videoTrack,
     this.isScreenShare, {
@@ -156,8 +166,8 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                           width: 5,
                         ),
                         Text(
-                          "2",
-                          style: TextStyle(color: Colors.white),
+                          widget.participantList.length.toString(),
+                          style: const TextStyle(color: Colors.white),
                         )
                       ]),
                     ),
@@ -178,7 +188,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                     title: UserMetaData.fromJson(
                             jsonDecode(widget.participant.metadata!))
                         .name,
-                    audioAvailable: firstAudioPublication?.muted == false &&
+                    audioAvailable: firstAudioPublication?.muted == true &&
                         firstAudioPublication?.subscribed == true,
                     connectionQuality: widget.participant.connectionQuality,
                     isScreenShare: widget.isScreenShare,
@@ -189,44 +199,44 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
           ],
         ),
       );
-}
 
-void _showModalBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-      enableDrag: false,
-      context: context,
-      builder: (BuildContext bc) {
-        return SizedBox(
-            height: MediaQuery.of(context).size.height * .3,
-            child: ListView.builder(
-                itemCount: 150,
-                itemBuilder: (BuildContext context, index) {
-                  return const ListTile(
-                    title: Text("Dipesh"),
-                    leading: CircleAvatar(
-                        backgroundColor: Colors.black,
-                        radius: 21,
-                        child: CircleAvatar(
-                          backgroundColor: Color(0xffE5F5FB),
-                          radius: 20,
-                          child: Text(
-                            "D",
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
+  void _showModalBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        enableDrag: false,
+        context: context,
+        builder: (BuildContext bc) {
+          return SizedBox(
+              height: MediaQuery.of(context).size.height * .3,
+              child: ListView.builder(
+                  itemCount: widget.participantList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return const ListTile(
+                      title: Text("Dipesh"),
+                      leading: CircleAvatar(
+                          backgroundColor: Colors.black,
+                          radius: 21,
+                          child: CircleAvatar(
+                            backgroundColor: Color(0xffE5F5FB),
+                            radius: 20,
+                            child: Text(
+                              "D",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+
+                          //Text
                           ),
-                        )
-
-                        //Text
-                        ),
-                    trailing: Icon(
-                      Icons.more_vert,
-                      color: Colors.black,
-                    ),
-                  );
-                }));
-      });
+                      trailing: Icon(
+                        Icons.more_vert,
+                        color: Colors.black,
+                      ),
+                    );
+                  }));
+        });
+  }
 }
 
 class _LocalParticipantWidgetState

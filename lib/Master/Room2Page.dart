@@ -189,10 +189,10 @@ class _Room2PageState extends State<Room2Page> {
       }
     }
     setState(() {
-      // participantTracks = [...screenTracks, ...userMediaTracks];
+      participantTracks = [...screenTracks, ...userMediaTracks];
 
-      // widget.room.participants.values
-      //     .map((participant) => addParticipant(participant));
+      widget.room.participants.values
+          .map((participant) => addParticipant(participant));
       // UserMetaData metadata = UserMetaData.fromJson(
       //     jsonDecode(widget.room.localParticipant!.metadata!));
       // participantsList.add(ParticipantOption(
@@ -214,7 +214,8 @@ class _Room2PageState extends State<Room2Page> {
           children: [
             Expanded(
                 child: participantTracks.isNotEmpty
-                    ? ParticipantWidget.widgetFor(participantTracks.first)
+                    ? ParticipantWidget.widgetFor(
+                        participantTracks.first, participantsList)
                     : Container()),
             // SizedBox(
             //   height: 50,

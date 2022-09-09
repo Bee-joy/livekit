@@ -57,7 +57,7 @@ class ParticipantInfoWidget extends StatelessWidget {
                 : Padding(
                     padding: const EdgeInsets.only(left: 5),
                     child: Icon(
-                      audioAvailable ? Icons.mic : Icons.mic_external_off,
+                      audioAvailable ? Icons.mic_none : Icons.mic_off,
                       color: audioAvailable ? Colors.white : Colors.red,
                       size: 16,
                     ),

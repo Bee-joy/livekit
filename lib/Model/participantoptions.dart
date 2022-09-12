@@ -14,18 +14,25 @@ String participantOptionToJson(ParticipantOption data) =>
 
 class ParticipantOption {
   ParticipantOption(
-      {this.name, this.image, this.raiseHand, this.roles, this.participant});
+      {this.name,
+      this.image,
+      this.raiseHand,
+      this.roles,
+      this.identity,
+      this.participant});
 
   String? name;
   String? image;
   bool? raiseHand;
   String? roles;
+  String? identity;
   Participant? participant;
 
   factory ParticipantOption.fromJson(Map<String, dynamic> json) =>
       ParticipantOption(
         name: json["name"],
         image: json["image"],
+        identity: json["identity"],
         raiseHand: json["raiseHand"],
       );
 
@@ -33,5 +40,6 @@ class ParticipantOption {
         "name": name,
         "image": image,
         "raiseHand": raiseHand,
+        "identity": identity
       };
 }

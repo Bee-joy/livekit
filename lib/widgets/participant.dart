@@ -121,6 +121,33 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   List<Widget> extraWidgets(bool isScreenShare) => [];
   ApiService apiService = ApiService();
 
+  void _kickOut(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.kickOut(
+          metadata.userId!, participant.room.name!, participant.identity);
+    }
+  }
+
+  void _updatePermission(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.updatePermission(metadata.userId!,
+          participant.room.name.toString(), participant.identity);
+    }
+  }
+
+  void _updateMetadata(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.updateMetadata(metadata.userId!,
+          participant.room.name.toString(), participant.identity, true);
+    }
+  }
+
   @override
   Widget build(BuildContext ctx) => Container(
         foregroundDecoration: BoxDecoration(
@@ -139,7 +166,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
             // Video
             InkWell(
               onTap: () => setState(() => _visible = !_visible),
-              child: activeVideoTrack != null
+              child: (activeVideoTrack != null && activeVideoTrack!.isActive)
                   ? VideoTrackRenderer(
                       activeVideoTrack!,
                       fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
@@ -203,6 +230,9 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
       );
 
   void _showModalBottomSheet(BuildContext context) {
+    UserMetaData metadata =
+        UserMetaData.fromJson(jsonDecode(widget.participant.metadata!));
+
     showModalBottomSheet(
         enableDrag: false,
         context: context,
@@ -230,60 +260,50 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                         children: [
                           Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: widget.participantList[index].roles ==
-                                      'student'
+                              child: widget.participantList[index].raiseHand!
                                   ? const Icon(Icons.back_hand_outlined)
                                   : const Text("")),
-                          widget.participantList[index].roles == 'student'
-                              ? const Popup(
-                                  menuList: [
-                                    PopupMenuItem(
-                                        child: ListTile(
+                          if (metadata.roles!.contains('teacher') &&
+                              widget.participantList[index].name !=
+                                  metadata.name)
+                            Popup(
+                              menuList: [
+                                PopupMenuItem(
+                                    padding: EdgeInsets.only(left: 16),
+                                    child: ListTile(
                                       horizontalTitleGap: 10,
-                                      minVerticalPadding: 0.0,
                                       minLeadingWidth: 10,
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.logout),
-                                      title: Text(
-                                        "Allow to talk",
-                                        style: TextStyle(color: Colors.blue),
+                                      leading: Icon(Icons.event_busy_sharp),
+                                      onTap: () => {
+                                        widget.participantList.remove(index),
+                                        _kickOut(widget
+                                            .participantList[index].participant)
+                                      },
+                                      title: const Text(
+                                        "Kick out",
+                                        style: TextStyle(color: Colors.red),
                                       ),
                                     )),
-                                  ],
-                                  icon: Icon(Icons.more_vert),
-                                )
-                              : const Popup(
-                                  menuList: [
-                                    PopupMenuItem(
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: ListTile(
-                                          horizontalTitleGap: 10,
-                                          minLeadingWidth: 10,
-                                          dense: true,
-                                          contentPadding: EdgeInsets.zero,
-                                          leading: Icon(Icons.event_busy_sharp),
-                                          title: Text(
-                                            "Kick out",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        )),
-                                    PopupMenuItem(
-                                        child: ListTile(
-                                      horizontalTitleGap: 10,
-                                      minVerticalPadding: 0.0,
-                                      minLeadingWidth: 10,
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.logout),
-                                      title: Text(
-                                        "Allow to talk",
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    )),
-                                  ],
-                                  icon: Icon(Icons.more_vert),
-                                ), // icon-2
+                                PopupMenuItem(
+                                    child: ListTile(
+                                  horizontalTitleGap: 10,
+                                  minVerticalPadding: 0.0,
+                                  minLeadingWidth: 10,
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Icon(Icons.logout),
+                                  onTap: () => _updatePermission(widget
+                                      .participantList[index].participant),
+                                  title: Text(
+                                    "Allow to talk",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                )),
+                              ],
+                              icon: Icon(Icons.more_vert),
+                            ), // icon-2
                         ],
                       ),
                     );

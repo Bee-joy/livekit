@@ -62,7 +62,9 @@ class _Room2PageState extends State<Room2Page> {
           ..on<RoomDisconnectedEvent>((_) async {
             WidgetsBindingCompatible.instance
                 ?.addPostFrameCallback((timeStamp) => Navigator.pop(context));
+            setParticipants();
           })
+          ..on<RoomReconnectedEvent>((_) => setParticipants())
           ..on<LocalTrackPublishedEvent>((_) => _sortParticipants())
           ..on<LocalTrackUnpublishedEvent>((_) => _sortParticipants())
           ..on<DataReceivedEvent>((event) {
@@ -86,6 +88,7 @@ class _Room2PageState extends State<Room2Page> {
         for (int i = 0; i < participantsList.length; i++) {
           if (participantsList[i].name == metadata.name) {
             participantsList[i].raiseHand = metadata.handRaise;
+            setParticipants();
           }
         }
       }
@@ -182,15 +185,20 @@ class _Room2PageState extends State<Room2Page> {
       UserMetaData metadata = UserMetaData.fromJson(
           jsonDecode(widget.room.localParticipant!.metadata!));
 
-      if (!participantsList.map((item) => item.name).contains(metadata.name)) {
-        participantsList.add(ParticipantOption(
-            name: metadata.name!,
-            image: "",
-            raiseHand: metadata.handRaise,
-            roles: (metadata.roles != null && metadata.roles?.length == 0)
-                ? "teacher"
-                : metadata.roles![0].toString(),
-            participant: widget.room.localParticipant));
+      if (!participantsList
+          .map((item) => item.identity)
+          .contains(widget.room.localParticipant!.identity)) {
+        if (metadata.name != null) {
+          participantsList.add(ParticipantOption(
+              name: metadata.name!,
+              image: "",
+              identity: widget.room.localParticipant!.identity,
+              raiseHand: metadata.handRaise,
+              roles: (metadata.roles != null && metadata.roles?.length == 0)
+                  ? "teacher"
+                  : metadata.roles![0].toString(),
+              participant: widget.room.localParticipant));
+        }
       }
     }
   }
@@ -202,6 +210,7 @@ class _Room2PageState extends State<Room2Page> {
       participantsList.add(ParticipantOption(
           name: metadata.name,
           image: "",
+          identity: participant.identity,
           raiseHand: metadata.handRaise,
           roles: metadata.roles?.length == 0
               ? "teacher"
@@ -223,6 +232,19 @@ class _Room2PageState extends State<Room2Page> {
                         child: Helper.getParticipantDetails(context,
                             participantsList, widget.room.localParticipant),
                       )),
+            SizedBox(
+              height: 100,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: math.max(0, participantTracks.length - 1),
+                itemBuilder: (BuildContext context, int index) => SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: ParticipantWidget.widgetFor(
+                      participantTracks[index + 1], participantsList),
+                ),
+              ),
+            ),
             if (widget.room.localParticipant != null)
               Row(children: [
                 ControlsWidget(widget.room, widget.room.localParticipant!),

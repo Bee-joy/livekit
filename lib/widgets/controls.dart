@@ -228,7 +228,10 @@ class _ControlsWidgetState extends State<ControlsWidget> {
 
   void _raiseHand() async {
     handRaise = !handRaise;
-
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(
+          "You raised your hand! We will let the moderators know you want to talk..."),
+    ));
     await apiService.updateMetadata(_metadata!.userId!, participant.room.name!,
         participant.identity, handRaise);
   }

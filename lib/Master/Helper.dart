@@ -19,12 +19,14 @@ class Helper {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(top: 70, left: 5),
+        padding: const EdgeInsets.only(top: 10, left: 8),
         child: InkWell(
           onTap: () => _showModalBottomSheet(
               context, participantsList, localParticipant),
           child: Container(
-            color: Colors.black,
+            decoration: const BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(5))),
             width: 60,
             height: 30,
             child: Padding(
@@ -35,7 +37,7 @@ class Helper {
                   color: Colors.white,
                 ),
                 const SizedBox(
-                  width: 5,
+                  width: 10,
                 ),
                 Text(
                   participantsList.length.toString(),
@@ -88,97 +90,127 @@ class Helper {
         context: context,
         builder: (BuildContext bc) {
           return Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height * .3,
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(0.0),
-                  itemCount: participantsList.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return ListTile(
-                      title: Text(participantsList[index].name.toString()),
-                      leading: const CircleAvatar(
-                          backgroundColor: Colors.red,
-                          radius: 21,
-                          child: CircleAvatar(
-                            backgroundColor: Color(0xffE5F5FB),
-                            radius: 20,
-                            backgroundImage: NetworkImage(
-                                'https://picsum.photos/id/237/200/300'),
-                          )),
-                      trailing: Wrap(
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: participantsList[index].raiseHand!
-                                  ? const Icon(Icons.back_hand_outlined)
-                                  : const Text("")),
-                          if (metadata.roles!.contains('teacher') &&
-                              participantsList[index].name != metadata.name)
-                            Popup(
-                              menuList: [
-                                PopupMenuItem(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: ListTile(
-                                      horizontalTitleGap: 10,
-                                      minLeadingWidth: 10,
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          minWidth: 20,
-                                          minHeight: 20,
-                                          maxWidth: 20,
-                                          maxHeight: 20,
-                                        ),
-                                        child: Image.asset(
-                                            "assets/images/kickout.png",
-                                            height: 20,
-                                            width: 20,
-                                            fit: BoxFit.cover),
-                                      ),
-                                      onTap: () => {
-                                        participantsList.remove(index),
-                                        _kickOut(
-                                            participantsList[index].participant)
-                                      },
-                                      title: const Text(
-                                        "Kick out",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    )),
-                                PopupMenuItem(
-                                    child: ListTile(
-                                  horizontalTitleGap: 10,
-                                  minLeadingWidth: 10,
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 20,
-                                      minHeight: 20,
-                                      maxWidth: 20,
-                                      maxHeight: 20,
-                                    ),
-                                    child: Image.asset(
-                                        "assets/images/allowtotalk.png",
-                                        height: 20,
-                                        width: 20,
-                                        fit: BoxFit.cover),
-                                  ),
-                                  onTap: () => _updatePermission(
-                                      participantsList[index].participant),
-                                  title: Text(
-                                    "Allow to talk",
-                                    style: TextStyle(color: Colors.purple[400]),
-                                  ),
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height * .3,
+            child: Column(children: [
+              Container(
+                  height: 50,
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 10, top: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Participants",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                size: 20,
+                                color: Colors.black,
+                              ),
+                              onPressed: () => Navigator.of(context).pop()),
+                        )
+                      ],
+                    ),
+                  )),
+              Divider(
+                color: Colors.grey.shade400,
+              ),
+              Expanded(
+                child: Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                        padding: const EdgeInsets.all(0.0),
+                        itemCount: participantsList.length,
+                        itemBuilder: (BuildContext context, index) {
+                          return ListTile(
+                            title:
+                                Text(participantsList[index].name.toString()),
+                            leading: const CircleAvatar(
+                                backgroundColor: Colors.red,
+                                radius: 21,
+                                child: CircleAvatar(
+                                  backgroundColor: Color(0xffE5F5FB),
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(
+                                      'https://picsum.photos/id/237/200/300'),
                                 )),
+                            trailing: Wrap(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: participantsList[index].raiseHand!
+                                        ? const Icon(Icons.back_hand_outlined)
+                                        : const Text("")),
+                                if (metadata.roles!.contains('teacher') &&
+                                    participantsList[index].name !=
+                                        metadata.name)
+                                  Popup(
+                                    menuList: [
+                                      PopupMenuItem(
+                                          padding:
+                                              const EdgeInsets.only(left: 16),
+                                          child: ListTile(
+                                            horizontalTitleGap: 10,
+                                            minLeadingWidth: 10,
+                                            dense: true,
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: ConstrainedBox(
+                                              constraints: const BoxConstraints(
+                                                minWidth: 40,
+                                                minHeight: 40,
+                                                maxWidth: 40,
+                                                maxHeight: 40,
+                                              ),
+                                              child: Image.asset(
+                                                  "assets/images/kick.png",
+                                                  fit: BoxFit.cover),
+                                            ),
+                                            onTap: () => {
+                                              participantsList.remove(index),
+                                              _kickOut(participantsList[index]
+                                                  .participant)
+                                            },
+                                            title: const Text(
+                                              "Kick out",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                          )),
+                                      PopupMenuItem(
+                                          child: ListTile(
+                                        horizontalTitleGap: 10,
+                                        minVerticalPadding: 0.0,
+                                        minLeadingWidth: 10,
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        leading: const Icon(Icons.logout),
+                                        onTap: () => _updatePermission(
+                                            participantsList[index]
+                                                .participant),
+                                        title: const Text(
+                                          "Allow to talk",
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                      )),
+                                    ],
+                                    icon: const Icon(Icons.more_vert),
+                                  ), // icon-2
                               ],
-                              icon: Icon(Icons.more_vert),
-                            ), // icon-2
-                        ],
-                      ),
-                    );
-                  }));
+                            ),
+                          );
+                        })),
+              )
+            ]),
+          );
         });
   }
 }

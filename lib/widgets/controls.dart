@@ -11,6 +11,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:livekit_client/livekit_client.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -229,10 +230,17 @@ class _ControlsWidgetState extends State<ControlsWidget> {
 
   void _raiseHand() async {
     handRaise = !handRaise;
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: Text(
-          "You raised your hand! We will let the moderators know you want to talk..."),
-    ));
+
+    Fluttertoast.showToast(
+        msg:
+            "You raised your hand! We will let the moderators know you want to talk...",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 14.0);
+
     await apiService.updateMetadata(_metadata!.userId!, participant.room.name!,
         participant.identity, handRaise);
   }
@@ -240,135 +248,140 @@ class _ControlsWidgetState extends State<ControlsWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Row(
-          children: [
-            if (isStudent())
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: RawMaterialButton(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          if (isStudent())
+            Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _raiseHand,
+                child: IconButton(
                   onPressed: _raiseHand,
-                  child: IconButton(
-                    onPressed: _raiseHand,
-                    icon: const Icon(
-                      Icons.back_hand_outlined,
-                      color: Colors.blue,
-                    ),
-                    tooltip: 'Raise Hand',
+                  icon: const Icon(
+                    Icons.back_hand_outlined,
+                    color: Colors.blue,
                   ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.grey[200],
+                  tooltip: 'Raise Hand',
                 ),
+                shape: const CircleBorder(),
+                fillColor: Colors.grey[200],
               ),
-            if (participant.permissions.canPublish)
-              if (participant.isMicrophoneEnabled())
-                RawMaterialButton(
-                  onPressed: _disableAudio,
-                  child: IconButton(
-                    onPressed: _disableAudio,
-                    icon: const Icon(Icons.mic_none, color: Colors.white),
-                    tooltip: 'Mute Mic',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                )
-              else
-                RawMaterialButton(
-                  onPressed: _enableAudio,
-                  child: IconButton(
-                    onPressed: _enableAudio,
-                    icon: const Icon(
-                      Icons.mic_off,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Unmute Mic',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                ),
-            if (participant.permissions.canPublish)
-              if (participant.isCameraEnabled())
-                RawMaterialButton(
-                  onPressed: _disableVideo,
-                  child: IconButton(
-                    onPressed: _disableVideo,
-                    icon: const Icon(
-                      EvaIcons.video,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Mute Video',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                )
-              else
-                RawMaterialButton(
-                  onPressed: _enableVideo,
-                  child: IconButton(
-                    onPressed: _enableVideo,
-                    icon: const Icon(
-                      EvaIcons.videoOffOutline,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Unmute video',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                ),
-            if (participant.permissions.canPublishData && !isStudent())
-              if (participant.isScreenShareEnabled())
-                RawMaterialButton(
-                  onPressed: _disableScreenShare,
-                  child: IconButton(
-                    onPressed: _disableScreenShare,
-                    icon: const Icon(
-                      Icons.share,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Unshare screen',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                  padding: const EdgeInsets.all(0.0),
-                )
-              else
-                RawMaterialButton(
-                  onPressed: _enableScreenShare,
-                  child: IconButton(
-                    onPressed: _enableScreenShare,
-                    icon: const Icon(
-                      Icons.monitor,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Share screen',
-                  ),
-                  shape: const CircleBorder(),
-                  elevation: 1.0,
-                  fillColor: Colors.red,
-                  padding: const EdgeInsets.all(0.0),
-                ),
-            RawMaterialButton(
-              onPressed: _onTapDisconnect,
-              child: IconButton(
-                onPressed: _onTapDisconnect,
-                icon: const Icon(
-                  Icons.call_end,
-                  color: Colors.white,
-                ),
-                tooltip: 'Disconnect',
-              ),
-              shape: const CircleBorder(),
-              elevation: 1.0,
-              fillColor: Colors.red,
-              padding: const EdgeInsets.all(0.0),
             ),
-          ],
-        ));
+          const SizedBox(width: 3),
+          if (participant.permissions.canPublish)
+            if (participant.isMicrophoneEnabled())
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _disableAudio,
+                child: IconButton(
+                  onPressed: _disableAudio,
+                  icon: const Icon(Icons.mic_none, color: Colors.white),
+                  tooltip: 'Mute Mic',
+                ),
+                shape: const CircleBorder(),
+                elevation: 1.0,
+                fillColor: Colors.red,
+              )
+            else
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _enableAudio,
+                child: IconButton(
+                  onPressed: _enableAudio,
+                  icon: const Icon(
+                    Icons.mic_off,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Unmute Mic',
+                ),
+                shape: const CircleBorder(),
+                elevation: 1.0,
+                fillColor: Colors.red,
+              ),
+          const SizedBox(width: 3),
+          if (participant.permissions.canPublish)
+            if (participant.isCameraEnabled())
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _disableVideo,
+                child: IconButton(
+                  onPressed: _disableVideo,
+                  icon: const Icon(
+                    EvaIcons.video,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Mute Video',
+                ),
+                shape: const CircleBorder(),
+                fillColor: Colors.red,
+              )
+            else
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _enableVideo,
+                child: IconButton(
+                  onPressed: _enableVideo,
+                  icon: const Icon(
+                    EvaIcons.videoOffOutline,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Unmute video',
+                ),
+                shape: const CircleBorder(),
+                elevation: 1.0,
+                fillColor: Colors.red,
+              ),
+          const SizedBox(width: 3),
+          if (participant.permissions.canPublishData && !isStudent())
+            if (participant.isScreenShareEnabled())
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _disableScreenShare,
+                child: IconButton(
+                  onPressed: _disableScreenShare,
+                  icon: const Icon(
+                    Icons.share,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Unshare screen',
+                ),
+                shape: const CircleBorder(),
+                fillColor: Colors.red,
+              )
+            else
+              RawMaterialButton(
+                constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+                onPressed: _enableScreenShare,
+                child: IconButton(
+                  onPressed: _enableScreenShare,
+                  icon: const Icon(
+                    Icons.monitor,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Share screen',
+                ),
+                shape: const CircleBorder(),
+                fillColor: Colors.red,
+              ),
+          const SizedBox(width: 3),
+          RawMaterialButton(
+            constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
+            onPressed: _onTapDisconnect,
+            child: IconButton(
+              onPressed: _onTapDisconnect,
+              icon: const Icon(
+                Icons.call_end,
+                color: Colors.white,
+              ),
+              tooltip: 'Disconnect',
+            ),
+            shape: const CircleBorder(),
+            fillColor: Colors.red,
+          ),
+        ],
+      ),
+    );
   }
 }

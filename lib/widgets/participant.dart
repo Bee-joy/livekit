@@ -149,175 +149,227 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   }
 
   @override
-  Widget build(BuildContext ctx) => Container(
-        foregroundDecoration: BoxDecoration(
-          border: widget.participant.isSpeaking && !widget.isScreenShare
-              ? Border.all(
-                  width: 5,
-                  color: Colors.red,
-                )
-              : null,
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(ctx).cardColor,
-        ),
-        child: Stack(
-          children: [
-            // Video
-            InkWell(
-              onTap: () => setState(() => _visible = !_visible),
-              child: (activeVideoTrack != null && activeVideoTrack!.isActive)
-                  ? VideoTrackRenderer(
-                      activeVideoTrack!,
-                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
-                    )
-                  : const NoVideoWidget(),
-            ),
+  Widget build(BuildContext ctx) => Padding(
+        padding:
+            const EdgeInsets.only(top: 18, left: 18, right: 18, bottom: 10),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          foregroundDecoration: BoxDecoration(
+            border: widget.participant.isSpeaking && !widget.isScreenShare
+                ? Border.all(
+                    width: 5,
+                    color: Colors.red,
+                  )
+                : null,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            color: Theme.of(ctx).cardColor,
+          ),
+          child: Stack(
+            children: [
+              // Video
+              InkWell(
+                onTap: () => setState(() => _visible = !_visible),
+                child: (activeVideoTrack != null && activeVideoTrack!.isActive)
+                    ? VideoTrackRenderer(
+                        activeVideoTrack!,
+                        fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                      )
+                    : const NoVideoWidget(),
+              ),
 
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 70, left: 5),
-                child: InkWell(
-                  onTap: () => _showModalBottomSheet(context),
-                  child: Container(
-                    color: Colors.black,
-                    width: 60,
-                    height: 30,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          widget.participantList.length.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        )
-                      ]),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 5),
+                  child: InkWell(
+                    onTap: () => _showModalBottomSheet(context),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      width: 60,
+                      height: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.people,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            widget.participantList.length.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        ]),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // Bottom bar
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...extraWidgets(widget.isScreenShare),
-                  ParticipantInfoWidget(
-                    title: UserMetaData.fromJson(
-                            jsonDecode(widget.participant.metadata!))
-                        .name,
-                    audioAvailable: firstAudioPublication?.muted == true &&
-                        firstAudioPublication?.subscribed == true,
-                    connectionQuality: widget.participant.connectionQuality,
-                    isScreenShare: widget.isScreenShare,
-                  ),
-                ],
+              // Bottom bar
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...extraWidgets(widget.isScreenShare),
+                    ParticipantInfoWidget(
+                      title: UserMetaData.fromJson(
+                              jsonDecode(widget.participant.metadata!))
+                          .name,
+                      audioAvailable: firstAudioPublication?.muted == true &&
+                          firstAudioPublication?.subscribed == true,
+                      connectionQuality: widget.participant.connectionQuality,
+                      isScreenShare: widget.isScreenShare,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
   void _showModalBottomSheet(BuildContext context) {
     UserMetaData metadata =
         UserMetaData.fromJson(jsonDecode(widget.participant.metadata!));
-
     showModalBottomSheet(
         enableDrag: false,
         context: context,
         builder: (BuildContext bc) {
           return Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height * .3,
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(0.0),
-                  itemCount: widget.participantList.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return ListTile(
-                      title:
-                          Text(widget.participantList[index].name.toString()),
-                      leading: const CircleAvatar(
-                          backgroundColor: Colors.red,
-                          radius: 21,
-                          child: CircleAvatar(
-                            backgroundColor: Color(0xffE5F5FB),
-                            radius: 20,
-                            backgroundImage: NetworkImage(
-                                'https://picsum.photos/id/237/200/300'),
-                          )),
-                      trailing: Wrap(
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: widget.participantList[index].raiseHand!
-                                  ? const Icon(Icons.back_hand_outlined)
-                                  : const Text("")),
-                          if (metadata.roles!.contains('teacher') &&
-                              widget.participantList[index].name !=
-                                  metadata.name)
-                            Popup(
-                              menuList: [
-                                PopupMenuItem(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: ListTile(
-                                      horizontalTitleGap: 10,
-                                      minLeadingWidth: 10,
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          minWidth: 40,
-                                          minHeight: 40,
-                                          maxWidth: 40,
-                                          maxHeight: 40,
-                                        ),
-                                        child: Image.asset(
-                                            "assets/images/kick.png",
-                                            fit: BoxFit.cover),
-                                      ),
-                                      onTap: () => {
-                                        widget.participantList.remove(index),
-                                        _kickOut(widget
-                                            .participantList[index].participant)
-                                      },
-                                      title: const Text(
-                                        "Kick out",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    )),
-                                PopupMenuItem(
-                                    child: ListTile(
-                                  horizontalTitleGap: 10,
-                                  minVerticalPadding: 0.0,
-                                  minLeadingWidth: 10,
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: Icon(Icons.logout),
-                                  onTap: () => _updatePermission(widget
-                                      .participantList[index].participant),
-                                  title: const Text(
-                                    "Allow to talk",
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height * .3,
+            child: Column(children: [
+              Container(
+                  height: 50,
+                  color: Colors.white,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 10, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Participants",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                size: 20,
+                                color: Colors.black,
+                              ),
+                              onPressed: () => Navigator.of(context).pop()),
+                        )
+                      ],
+                    ),
+                  )),
+              Divider(
+                color: Colors.grey.shade400,
+              ),
+              Expanded(
+                child: Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                        padding: const EdgeInsets.all(0.0),
+                        itemCount: widget.participantList.length,
+                        itemBuilder: (BuildContext context, index) {
+                          return ListTile(
+                            title: Text(
+                                widget.participantList[index].name.toString()),
+                            leading: const CircleAvatar(
+                                backgroundColor: Colors.red,
+                                radius: 21,
+                                child: CircleAvatar(
+                                  backgroundColor: Color(0xffE5F5FB),
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(
+                                      'https://picsum.photos/id/237/200/300'),
                                 )),
+                            trailing: Wrap(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: widget
+                                            .participantList[index].raiseHand!
+                                        ? const Icon(Icons.back_hand_outlined)
+                                        : const Text("")),
+                                if (metadata.roles!.contains('teacher') &&
+                                    widget.participantList[index].name !=
+                                        metadata.name)
+                                  Popup(
+                                    menuList: [
+                                      PopupMenuItem(
+                                          padding:
+                                              const EdgeInsets.only(left: 16),
+                                          child: ListTile(
+                                            horizontalTitleGap: 10,
+                                            minLeadingWidth: 10,
+                                            dense: true,
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: ConstrainedBox(
+                                              constraints: const BoxConstraints(
+                                                minWidth: 40,
+                                                minHeight: 40,
+                                                maxWidth: 40,
+                                                maxHeight: 40,
+                                              ),
+                                              child: Image.asset(
+                                                  "assets/images/kick.png",
+                                                  fit: BoxFit.cover),
+                                            ),
+                                            onTap: () => {
+                                              widget.participantList
+                                                  .remove(index),
+                                              _kickOut(widget
+                                                  .participantList[index]
+                                                  .participant)
+                                            },
+                                            title: const Text(
+                                              "Kick out",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                          )),
+                                      PopupMenuItem(
+                                          child: ListTile(
+                                        horizontalTitleGap: 10,
+                                        minVerticalPadding: 0.0,
+                                        minLeadingWidth: 10,
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        leading: const Icon(Icons.logout),
+                                        onTap: () => _updatePermission(widget
+                                            .participantList[index]
+                                            .participant),
+                                        title: const Text(
+                                          "Allow to talk",
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                      )),
+                                    ],
+                                    icon: const Icon(Icons.more_vert),
+                                  ), // icon-2
                               ],
-                              icon: Icon(Icons.more_vert),
-                            ), // icon-2
-                        ],
-                      ),
-                    );
-                  }));
+                            ),
+                          );
+                        })),
+              )
+            ]),
+          );
         });
   }
 }

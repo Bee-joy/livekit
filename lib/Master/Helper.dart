@@ -117,13 +117,25 @@ class Helper {
                             Popup(
                               menuList: [
                                 PopupMenuItem(
-                                    padding: EdgeInsets.only(left: 16),
+                                    padding: const EdgeInsets.only(left: 16),
                                     child: ListTile(
                                       horizontalTitleGap: 10,
                                       minLeadingWidth: 10,
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.event_busy_sharp),
+                                      leading: ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
+                                          maxWidth: 20,
+                                          maxHeight: 20,
+                                        ),
+                                        child: Image.asset(
+                                            "assets/images/kickout.png",
+                                            height: 20,
+                                            width: 20,
+                                            fit: BoxFit.cover),
+                                      ),
                                       onTap: () => {
                                         participantsList.remove(index),
                                         _kickOut(
@@ -137,16 +149,27 @@ class Helper {
                                 PopupMenuItem(
                                     child: ListTile(
                                   horizontalTitleGap: 10,
-                                  minVerticalPadding: 0.0,
                                   minLeadingWidth: 10,
                                   dense: true,
                                   contentPadding: EdgeInsets.zero,
-                                  leading: Icon(Icons.logout),
+                                  leading: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                      maxWidth: 20,
+                                      maxHeight: 20,
+                                    ),
+                                    child: Image.asset(
+                                        "assets/images/allowtotalk.png",
+                                        height: 20,
+                                        width: 20,
+                                        fit: BoxFit.cover),
+                                  ),
                                   onTap: () => _updatePermission(
                                       participantsList[index].participant),
                                   title: Text(
                                     "Allow to talk",
-                                    style: TextStyle(color: Colors.blue),
+                                    style: TextStyle(color: Colors.purple[400]),
                                   ),
                                 )),
                               ],

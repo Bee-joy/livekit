@@ -232,21 +232,21 @@ class _Room2PageState extends State<Room2Page> {
                         child: Helper.getParticipantDetails(context,
                             participantsList, widget.room.localParticipant),
                       )),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: math.max(0, participantTracks.length - 1),
-                itemBuilder: (BuildContext context, int index) => SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: ParticipantWidget.widgetFor(
-                      participantTracks[index + 1], participantsList),
-                ),
-              ),
-            ),
+            // SizedBox(
+            //   height: 100,
+            //   child: ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     itemCount: math.max(0, participantTracks.length - 1),
+            //     itemBuilder: (BuildContext context, int index) => SizedBox(
+            //       width: 100,
+            //       height: 100,
+            //       child: ParticipantWidget.widgetFor(
+            //           participantTracks[index + 1], participantsList),
+            //     ),
+            //   ),
+            // ),
             if (widget.room.localParticipant != null)
-              Row(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ControlsWidget(widget.room, widget.room.localParticipant!),
               ]),
           ],

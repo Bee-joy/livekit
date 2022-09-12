@@ -21,7 +21,11 @@ class Login extends StatelessWidget {
               padding: const EdgeInsets.only(left: 14, right: 14, bottom: 100),
               child: Container(
                 height: MediaQuery.of(context).size.height * .3,
-                decoration: const BoxDecoration(color: Colors.white),
+                width: MediaQuery.of(context).size.width * .9,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8, right: 15, left: 15),
                   child: Column(
@@ -61,6 +65,8 @@ class Login extends StatelessWidget {
                                       snapshot.data!['status'] ==
                                           'processing') {
                                     isSuccess = true;
+                                  } else {
+                                    isSuccess = false;
                                   }
                                   return ElevatedButton(
                                     onPressed: () {

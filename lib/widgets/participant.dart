@@ -269,13 +269,23 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                             Popup(
                               menuList: [
                                 PopupMenuItem(
-                                    padding: EdgeInsets.only(left: 16),
+                                    padding: const EdgeInsets.only(left: 16),
                                     child: ListTile(
                                       horizontalTitleGap: 10,
                                       minLeadingWidth: 10,
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.event_busy_sharp),
+                                      leading: ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 40,
+                                          minHeight: 40,
+                                          maxWidth: 40,
+                                          maxHeight: 40,
+                                        ),
+                                        child: Image.asset(
+                                            "assets/images/kick.png",
+                                            fit: BoxFit.cover),
+                                      ),
                                       onTap: () => {
                                         widget.participantList.remove(index),
                                         _kickOut(widget
@@ -296,7 +306,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                   leading: Icon(Icons.logout),
                                   onTap: () => _updatePermission(widget
                                       .participantList[index].participant),
-                                  title: Text(
+                                  title: const Text(
                                     "Allow to talk",
                                     style: TextStyle(color: Colors.blue),
                                   ),

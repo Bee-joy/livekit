@@ -5,6 +5,7 @@ import 'package:dipesh/Model/participantoptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:livekit_client/livekit_client.dart';
+import '../ApiService/ApiService.dart';
 import 'no_video.dart';
 import 'participant_info.dart';
 
@@ -118,6 +119,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
 
   // Widgets to show above the info bar
   List<Widget> extraWidgets(bool isScreenShare) => [];
+  ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext ctx) => Container(

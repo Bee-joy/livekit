@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:dipesh/ApiService/ApiService.dart';
 import 'package:dipesh/Model/UserMetaData.dart';
+import 'package:dipesh/utils/exts.dart';
 import 'package:dipesh/utils/roles.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 
 import 'package:livekit_client/livekit_client.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -159,21 +161,21 @@ class _ControlsWidgetState extends State<ControlsWidget> {
       return;
     }
     if (WebRTC.platformIsAndroid) {
-      // Android specific
-      // try {
-      //   // Required for android screenshare.
-      //   const androidConfig = FlutterBackgroundAndroidConfig(
-      //     notificationTitle: 'Screen Sharing',
-      //     notificationText: 'LiveKit Example is sharing the screen.',
-      //     notificationImportance: AndroidNotificationImportance.Default,
-      //     notificationIcon:
-      //         AndroidResource(name: 'livekit_ic_launcher', defType: 'mipmap'),
-      //   );
-      //   await FlutterBackground.initialize(androidConfig: androidConfig);
-      //   await FlutterBackground.enableBackgroundExecution();
-      // } catch (e) {
-      //   print('could not publish video: $e');
-      // }
+      // Android specific;
+      try {
+        // Required for android screenshare.
+        const androidConfig = FlutterBackgroundAndroidConfig(
+          notificationTitle: 'Screen Sharing',
+          notificationText: 'Your screen is being shared',
+          notificationImportance: AndroidNotificationImportance.Default,
+          notificationIcon:
+              AndroidResource(name: 'livekit_ic_launcher', defType: 'mipmap'),
+        );
+        await FlutterBackground.initialize(androidConfig: androidConfig);
+        await FlutterBackground.enableBackgroundExecution();
+      } catch (e) {
+        print('could not publish video: $e');
+      }
     }
     await participant.setScreenShareEnabled(true);
   }
@@ -190,56 +192,35 @@ class _ControlsWidgetState extends State<ControlsWidget> {
     }
   }
 
-  // void _onTapDisconnect() async {
-  //   final result = await context.showDisconnectDialog();
-  //   if (result == true) await widget.room.disconnect();
-  // }
+  void _onTapDisconnect() async {
+    final result = await context.showDisconnectDialog();
+    if (result == true) await widget.room.disconnect();
+  }
 
-  // void _onTapReconnect() async {
-  //   final result = await context.showReconnectDialog();
-  //   if (result == true) {
-  //     try {
-  //       await widget.room.reconnect();
-  //       await context.showReconnectSuccessDialog();
-  //     } catch (error) {
-  //       await context.showErrorDialog(error);
-  //     }
-  //   }
-  // }
+  void _onTapReconnect() async {
+    final result = await context.showReconnectDialog();
+    if (result == true) {
+      try {
+        await widget.room.reconnect();
+        await context.showReconnectSuccessDialog();
+      } catch (error) {
+        await context.showErrorDialog(error);
+      }
+    }
+  }
 
-  // void _onTapUpdateSubscribePermission() async {
-  //   final result = await context.showSubscribePermissionDialog();
-  //   if (result != null) {
-  //     try {
-  //       widget.room.localParticipant?.setTrackSubscriptionPermissions(
-  //         allParticipantsAllowed: result,
-  //       );
-  //     } catch (error) {
-  //       await context.showErrorDialog(error);
-  //     }
-  //   }
-  // }
-
-  // void _onTapSimulateScenario() async {
-  //   final result = await context.showSimulateScenarioDialog();
-  //   if (result != null) {
-  //     print('${result}');
-  //     await widget.room.sendSimulateScenario(
-  //       nodeFailure: result == SimulateScenarioResult.nodeFailure ? true : null,
-  //       migration: result == SimulateScenarioResult.migration ? true : null,
-  //       serverLeave: result == SimulateScenarioResult.serverLeave ? true : null,
-  //     );
-  //   }
-  // }
-
-  // void _onTapSendData() async {
-  //   final result = await context.showSendDataDialog();
-  //   if (result == true) {
-  //     await widget.participant.publishData(
-  //       utf8.encode('This is a sample data message'),
-  //     );
-  //   }
-  // }
+  void _onTapUpdateSubscribePermission() async {
+    final result = await context.showSubscribePermissionDialog();
+    if (result != null) {
+      try {
+        widget.room.localParticipant?.setTrackSubscriptionPermissions(
+          allParticipantsAllowed: result,
+        );
+      } catch (error) {
+        await context.showErrorDialog(error);
+      }
+    }
+  }
 
   bool isStudent() {
     return _metadata?.roles!.indexOf(Roles.student.name) != -1;
@@ -247,11 +228,9 @@ class _ControlsWidgetState extends State<ControlsWidget> {
 
   void _raiseHand() async {
     handRaise = !handRaise;
-    // await ApiManager.instance.updateMetadata(_metadata!.userId!,
-    //     participant.room.name!, participant.identity, handRaise);
 
-    await apiService.updatePermission(
-        _metadata!.userId!, participant.room.name!, participant.identity);
+    await apiService.updateMetadata(_metadata!.userId!, participant.room.name!,
+        participant.identity, handRaise);
   }
 
   @override
@@ -265,13 +244,13 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               padding: const EdgeInsets.only(left: 40),
               child: RawMaterialButton(
                 onPressed: _raiseHand,
-                child: IconButton(
-                  onPressed: _raiseHand,
-                  icon: const Icon(
+                child: const IconButton(
+                  onPressed: null,
+                  icon: Icon(
                     Icons.back_hand_outlined,
                     color: Colors.blue,
                   ),
-                  tooltip: 'un-mute video',
+                  tooltip: 'Raise Hand',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -283,9 +262,9 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 onPressed: _disableAudio,
                 child: IconButton(
-                  onPressed: _disableAudio,
-                  icon: const Icon(Icons.mic_off),
-                  tooltip: 'mute video',
+                  onPressed: null,
+                  icon: const Icon(Icons.mic_none, color: Colors.white),
+                  tooltip: 'Mute Mic',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -293,14 +272,14 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               )
             else
               RawMaterialButton(
-                onPressed: () => _enableAudio(),
+                onPressed: _enableAudio,
                 child: IconButton(
-                  onPressed: () => _enableAudio(),
+                  onPressed: null,
                   icon: const Icon(
-                    Icons.mic_none,
+                    Icons.mic_off,
                     color: Colors.white,
                   ),
-                  tooltip: 'un-mute video',
+                  tooltip: 'Unmute Mic',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -311,12 +290,12 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 onPressed: _disableVideo,
                 child: IconButton(
-                  onPressed: _disableVideo,
+                  onPressed: null,
                   icon: const Icon(
                     Icons.video_call,
                     color: Colors.white,
                   ),
-                  tooltip: 'mute video',
+                  tooltip: 'Mute Video',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -326,28 +305,28 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 onPressed: _enableVideo,
                 child: IconButton(
-                  onPressed: _enableVideo,
+                  onPressed: null,
                   icon: const Icon(
                     Icons.video_call,
                     color: Colors.white,
                   ),
-                  tooltip: 'un mute video',
+                  tooltip: 'Unmute video',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
                 fillColor: Colors.red,
               ),
-          if (participant.permissions.canPublishData)
+          if (participant.permissions.canPublishData && !isStudent())
             if (participant.isScreenShareEnabled())
               RawMaterialButton(
-                onPressed: () => _disableScreenShare(),
+                onPressed: _disableScreenShare,
                 child: IconButton(
-                  onPressed: () => _disableScreenShare(),
+                  onPressed: null,
                   icon: const Icon(
                     Icons.video_call,
                     color: Colors.white,
                   ),
-                  tooltip: 'unshare screen (experimental)',
+                  tooltip: 'Unshare screen',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -356,14 +335,14 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               )
             else
               RawMaterialButton(
-                onPressed: () => _enableScreenShare(),
+                onPressed: _enableScreenShare,
                 child: IconButton(
-                  onPressed: () => _enableScreenShare(),
+                  onPressed: null,
                   icon: const Icon(
                     Icons.monitor,
                     color: Colors.white,
                   ),
-                  tooltip: 'share screen (experimental)',
+                  tooltip: 'Share screen',
                 ),
                 shape: const CircleBorder(),
                 elevation: 1.0,
@@ -371,14 +350,14 @@ class _ControlsWidgetState extends State<ControlsWidget> {
                 padding: const EdgeInsets.all(0.0),
               ),
           RawMaterialButton(
-            onPressed: () => _onTapDisconnect(),
+            onPressed: _onTapDisconnect,
             child: IconButton(
-              onPressed: () => _onTapDisconnect(),
+              onPressed: null,
               icon: const Icon(
                 Icons.call_end,
                 color: Colors.white,
               ),
-              tooltip: 'disconnect)',
+              tooltip: 'Disconnect',
             ),
             shape: const CircleBorder(),
             elevation: 1.0,
@@ -389,6 +368,4 @@ class _ControlsWidgetState extends State<ControlsWidget> {
       ),
     );
   }
-
-  _onTapDisconnect() {}
 }

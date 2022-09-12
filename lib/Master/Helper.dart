@@ -1,17 +1,28 @@
+import 'dart:convert';
+
 import 'package:dipesh/Model/participantoptions.dart';
 import 'package:dipesh/widgets/participant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:livekit_client/livekit_client.dart';
+
+import '../ApiService/ApiService.dart';
+import '../Model/UserMetaData.dart';
 
 class Helper {
+  static ApiService apiService = new ApiService();
+
   static getParticipantDetails(
-      BuildContext context, List<ParticipantOption> participantsList) {
+      BuildContext context,
+      List<ParticipantOption> participantsList,
+      LocalParticipant? localParticipant) {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
         padding: const EdgeInsets.only(top: 70, left: 5),
         child: InkWell(
-          onTap: () => _showModalBottomSheet(context, participantsList),
+          onTap: () => _showModalBottomSheet(
+              context, participantsList, localParticipant),
           child: Container(
             color: Colors.black,
             width: 60,
@@ -38,8 +49,40 @@ class Helper {
     );
   }
 
+  static void _kickOut(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.kickOut(
+          metadata.userId!, participant.room.name!, participant.identity);
+    }
+  }
+
+  static void _updatePermission(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.updatePermission(metadata.userId!,
+          participant.room.name.toString(), participant.identity);
+    }
+  }
+
+  static void _updateMetadata(Participant? participant) async {
+    if (participant != null) {
+      UserMetaData metadata =
+          UserMetaData.fromJson(jsonDecode(participant.metadata!));
+      await apiService.updateMetadata(metadata.userId!,
+          participant.room.name.toString(), participant.identity, true);
+    }
+  }
+
   static void _showModalBottomSheet(
-      BuildContext context, List<ParticipantOption> participantsList) {
+      BuildContext context,
+      List<ParticipantOption> participantsList,
+      LocalParticipant? localParticipant) {
+    UserMetaData metadata = new UserMetaData();
+    if (localParticipant != null)
+      metadata = UserMetaData.fromJson(jsonDecode(localParticipant.metadata!));
     showModalBottomSheet(
         enableDrag: false,
         context: context,
@@ -66,59 +109,49 @@ class Helper {
                         children: [
                           Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: participantsList[index].roles == 'student'
+                              child: participantsList[index].raiseHand!
                                   ? const Icon(Icons.back_hand_outlined)
                                   : const Text("")),
-                          participantsList[index].roles == 'student'
-                              ? const Popup(
-                                  menuList: [
-                                    PopupMenuItem(
-                                        child: ListTile(
+                          if (metadata.roles!.contains('teacher') &&
+                              participantsList[index].name != metadata.name)
+                            Popup(
+                              menuList: [
+                                PopupMenuItem(
+                                    padding: EdgeInsets.only(left: 16),
+                                    child: ListTile(
                                       horizontalTitleGap: 10,
-                                      minVerticalPadding: 0.0,
                                       minLeadingWidth: 10,
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.logout),
-                                      title: Text(
-                                        "Allow to talk",
-                                        style: TextStyle(color: Colors.blue),
+                                      leading: Icon(Icons.event_busy_sharp),
+                                      onTap: () => {
+                                        participantsList.remove(index),
+                                        _kickOut(
+                                            participantsList[index].participant)
+                                      },
+                                      title: const Text(
+                                        "Kick out",
+                                        style: TextStyle(color: Colors.red),
                                       ),
                                     )),
-                                  ],
-                                  icon: Icon(Icons.more_vert),
-                                )
-                              : const Popup(
-                                  menuList: [
-                                    PopupMenuItem(
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: ListTile(
-                                          horizontalTitleGap: 10,
-                                          minLeadingWidth: 10,
-                                          dense: true,
-                                          contentPadding: EdgeInsets.zero,
-                                          leading: Icon(Icons.event_busy_sharp),
-                                          title: Text(
-                                            "Kick out",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        )),
-                                    PopupMenuItem(
-                                        child: ListTile(
-                                      horizontalTitleGap: 10,
-                                      minVerticalPadding: 0.0,
-                                      minLeadingWidth: 10,
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.logout),
-                                      title: Text(
-                                        "Allow to talk",
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    )),
-                                  ],
-                                  icon: Icon(Icons.more_vert),
-                                ), // icon-2
+                                PopupMenuItem(
+                                    child: ListTile(
+                                  horizontalTitleGap: 10,
+                                  minVerticalPadding: 0.0,
+                                  minLeadingWidth: 10,
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Icon(Icons.logout),
+                                  onTap: () => _updatePermission(
+                                      participantsList[index].participant),
+                                  title: Text(
+                                    "Allow to talk",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                )),
+                              ],
+                              icon: Icon(Icons.more_vert),
+                            ), // icon-2
                         ],
                       ),
                     );

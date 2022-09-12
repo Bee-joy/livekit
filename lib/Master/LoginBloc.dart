@@ -39,22 +39,29 @@ class LoginBloc {
       if (user.statusCode != 200 && user.statusCode != 200) {
         loginSink.add({'status': 'failed'});
       }
-      await apiService
-          .getToken(user.data!.userId!, "6315a1993fbbdd1bcffasb741")
-          .then((value) => {
-                room.connect(
-                    'ws://ec2-15-207-86-53.ap-south-1.compute.amazonaws.com:7880',
-                    value.data!.token!,
-                    roomOptions: const RoomOptions(
-                      defaultScreenShareCaptureOptions:
-                          ScreenShareCaptureOptions(
-                              useiOSBroadcastExtension: true),
-                    )),
-                Navigator.push<void>(
-                    event.context,
-                    MaterialPageRoute(
-                        builder: (_) => Room2Page(room, listener)))
-              });
+      try {
+        await apiService
+            .getToken(user.data!.userId!, "6315a1993fbbdd1bcffasb741")
+            .then((value) => {
+                  room
+                      .connect(
+                          'ws://ec2-65-0-31-130.ap-south-1.compute.amazonaws.com:7880',
+                          value.data!.token!,
+                          roomOptions: const RoomOptions(
+                            defaultScreenShareCaptureOptions:
+                                ScreenShareCaptureOptions(
+                                    useiOSBroadcastExtension: true),
+                          ))
+                      .onError((error, stackTrace) =>
+                          loginSink.add({'status': 'failed'})),
+                  Navigator.push<void>(
+                      event.context,
+                      MaterialPageRoute(
+                          builder: (_) => Room2Page(room, listener)))
+                });
+      } catch (e) {
+        loginSink.add({'status': 'failed'});
+      }
     }
   }
 }

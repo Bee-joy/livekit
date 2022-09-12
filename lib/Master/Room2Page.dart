@@ -74,55 +74,29 @@ class _Room2PageState extends State<Room2Page> {
             }
             // context.showDataReceivedDialog(decoded);
           })
-        //   ,
-        // _parListener
-        //   ..on<ParticipantMetadataUpdatedEvent>(
-        //       (participent) => updateParticipate())
+          ..on<ParticipantMetadataUpdatedEvent>(
+              (participent) => updateParticipate(participent.participant))
       };
 
-  void updateParticipate() {
-    //update participante list here
+  void updateParticipate(Participant? newParticipent) {
+    if (newParticipent != null) {
+      if (newParticipent.metadata != null) {
+        UserMetaData metadata = UserMetaData.fromJson(
+            jsonDecode(newParticipent.metadata.toString()));
+        for (int i = 0; i < participantsList.length; i++) {
+          if (participantsList[i].name == metadata.name) {
+            participantsList[i].raiseHand = metadata.handRaise;
+          }
+        }
+      }
+    }
   }
-
-  void _kickOut(RemoteParticipant participant) async {
-    UserMetaData metadata =
-        UserMetaData.fromJson(jsonDecode(participant.metadata!));
-    await apiService.kickOut(
-        metadata.userId!, participant.room.name!, participant.identity);
-  }
-
-  void _updatePermission() async {
-    UserMetaData metadata = UserMetaData.fromJson(
-        jsonDecode(widget.room.localParticipant!.metadata!));
-    await apiService.updatePermission(metadata.userId!, widget.room.name!,
-        widget.room.localParticipant!.identity);
-  }
-
-  // void _askPublish() async {
-  //   final result = await context.showPublishDialog();
-  //   if (result != true) return;
-  //   // video will fail when running in ios simulator
-  //   try {
-  //     await widget.room.localParticipant?.setCameraEnabled(true);
-  //   } catch (error) {
-  //     print('could not publish video: $error');
-  //     await context.showErrorDialog(error);
-  //   }
-  //   try {
-  //     await widget.room.localParticipant?.setMicrophoneEnabled(true);
-  //   } catch (error) {
-  //     print('could not publish audio: $error');
-  //     await context.showErrorDialog(error);
-  //   }
-  // }
 
   void _onRoomDidUpdate() {
     _sortParticipants();
   }
 
   void _sortParticipants() {
-    if (participent?.metadata != null)
-      print("METADATA" + participent!.metadata!);
     List<ParticipantTrack> userMediaTracks = [];
     List<ParticipantTrack> screenTracks = [];
 
@@ -192,13 +166,19 @@ class _Room2PageState extends State<Room2Page> {
     }
     setState(() {
       participantTracks = [...screenTracks, ...userMediaTracks];
+      setParticipants();
+    });
+  }
 
-      Iterable<RemoteParticipant> remoteparticipants =
-          widget.room.participants.values;
-      for (int i = 0; i < remoteparticipants.length; i++) {
-        addParticipant(remoteparticipants.elementAt(i));
-      }
+  void setParticipants() {
+    participantsList.clear();
+    Iterable<RemoteParticipant> remoteparticipants =
+        widget.room.participants.values;
+    for (int i = 0; i < remoteparticipants.length; i++) {
+      addParticipant(remoteparticipants.elementAt(i));
+    }
 
+    if (widget.room.localParticipant != null) {
       UserMetaData metadata = UserMetaData.fromJson(
           jsonDecode(widget.room.localParticipant!.metadata!));
 
@@ -206,10 +186,13 @@ class _Room2PageState extends State<Room2Page> {
         participantsList.add(ParticipantOption(
             name: metadata.name!,
             image: "",
-            raiseHand: metadata.raiseHand,
-            roles: metadata.roles![0].toString()));
+            raiseHand: metadata.handRaise,
+            roles: (metadata.roles != null && metadata.roles?.length == 0)
+                ? "teacher"
+                : metadata.roles![0].toString(),
+            participant: widget.room.localParticipant));
       }
-    });
+    }
   }
 
   void addParticipant(Participant participant) {
@@ -217,10 +200,13 @@ class _Room2PageState extends State<Room2Page> {
         UserMetaData.fromJson(jsonDecode(participant.metadata!));
     if (!participantsList.map((item) => item.name).contains(metadata.name)) {
       participantsList.add(ParticipantOption(
-          name: metadata.name!,
+          name: metadata.name,
           image: "",
-          raiseHand: metadata.raiseHand,
-          roles: metadata.roles![0].toString()));
+          raiseHand: metadata.handRaise,
+          roles: metadata.roles?.length == 0
+              ? "teacher"
+              : metadata.roles![0].toString(),
+          participant: participant));
     }
   }
 
@@ -234,67 +220,13 @@ class _Room2PageState extends State<Room2Page> {
                         participantTracks.first, participantsList)
                     : Container(
                         color: Colors.grey,
-                        child: Helper.getParticipantDetails(
-                            context, participantsList),
+                        child: Helper.getParticipantDetails(context,
+                            participantsList, widget.room.localParticipant),
                       )),
-            // SizedBox(
-            //   height: 50,
-            //   child: ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: math.max(0, participantTracks.length - 1),
-            //     itemBuilder: (BuildContext context, int index) => SizedBox(
-            //       width: 100,
-            //       height: 100,
-            //       child:
-            //           ParticipantWidget.widgetFor(participantTracks[index + 1]),
-            //     ),
-            //   ),
-            // ),
             if (widget.room.localParticipant != null)
               Row(children: [
                 ControlsWidget(widget.room, widget.room.localParticipant!),
               ]),
-            // SizedBox(
-            //     height: MediaQuery.of(context).size.height * .2,
-            //     child: ListView.builder(
-            //         itemCount: 150,
-            //         itemBuilder: (BuildContext context, index) {
-            //           return Text('index $index');
-            //         })),
-
-            // Container(
-            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            //   height: 70.0,
-            //   color: Colors.white,
-            //   child: Row(
-            //     children: <Widget>[
-            //       Expanded(
-            //         child: TextField(
-            //           controller: widget._messageBody,
-            //           textCapitalization: TextCapitalization.sentences,
-            //           onChanged: (value) {
-            //             setState(() {});
-            //           },
-            //           decoration: const InputDecoration.collapsed(
-            //             hintText: 'Send a message...',
-            //           ),
-            //         ),
-            //       ),
-            //       RawMaterialButton(
-            //         onPressed: () {},
-            //         elevation: 2.0,
-            //         fillColor: const Color(0xFFd1c9f3),
-            //         child: const Icon(
-            //           Icons.send,
-            //           size: 20.0,
-            //           color: Colors.white,
-            //         ),
-            //         padding: const EdgeInsets.all(15.0),
-            //         shape: const CircleBorder(),
-            //       )
-            //     ],
-            //   ),
-            // )
           ],
         ),
       );

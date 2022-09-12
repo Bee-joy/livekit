@@ -37,12 +37,12 @@ class ApiService {
   Future<void> updateMetadata(
       String userId, String roomId, String identifier, bool handRaise) async {
     var data = {
-      'userId': roomId,
+      'roomId': roomId,
       'identifier': identifier,
       'items': {"handRaise": handRaise},
     };
 
-    String url = Master.pwCommunity;
+    String url = Master.pwVideoApi;
     dio.options.headers["userId"] = "${userId}";
     try {
       Response responsePost =
@@ -62,7 +62,7 @@ class ApiService {
       "doPublish": true
     };
 
-    String url = Master.pwCommunity;
+    String url = Master.pwVideoApi;
     dio.options.headers["userId"] = "${userId}";
     try {
       Response responsePost =
@@ -75,7 +75,7 @@ class ApiService {
 
   Future<void> kickOut(String userId, String roomId, String identifier) async {
     var data = {"roomId": roomId, "identifier": identifier};
-    String url = Master.pwCommunity;
+    String url = Master.pwVideoApi;
     dio.options.headers["userId"] = "${userId}";
     try {
       Response responsePost = await dio.post(url + "/kickOut", data: data);

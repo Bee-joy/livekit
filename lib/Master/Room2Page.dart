@@ -223,23 +223,24 @@ class _Room2PageState extends State<Room2Page> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           leading: const Icon(Icons.menu, color: Colors.blue),
-          title: const Text(
-            'Video Channel',
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+          title: const Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              'Video Channel',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
           ),
           actions: [
             Container(
-              margin: const EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.notifications_none_sharp,
-                  color: Colors.black,
-                  size: 24.0,
-                ),
-              ),
-            ),
+                margin: const EdgeInsets.only(right: 12),
+                child: Image.asset(
+                  "assets/images/bell.png",
+                  width: 18,
+                  height: 18,
+                )),
           ],
           backgroundColor: Colors.white,
         ),
@@ -332,7 +333,7 @@ class _Room2PageState extends State<Room2Page> {
                               padding: const EdgeInsets.only(
                                   top: 16, bottom: 16, left: 10),
                               child: SizedBox(
-                                height: 22,
+                                height: 20,
                                 child: TextField(
                                   controller: widget._messageBody,
                                   textCapitalization:
@@ -342,7 +343,7 @@ class _Room2PageState extends State<Room2Page> {
                                   },
                                   decoration: InputDecoration.collapsed(
                                     hintStyle: TextStyle(
-                                        color: Colors.grey[350], fontSize: 18),
+                                        color: Colors.grey[350], fontSize: 16),
                                     hintText: 'Write Message',
                                   ),
                                 ),

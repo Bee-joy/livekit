@@ -159,19 +159,19 @@ class Helper {
                                           padding:
                                               const EdgeInsets.only(left: 16),
                                           child: ListTile(
+                                            contentPadding:const EdgeInsets.all(0),
                                             horizontalTitleGap: 10,
                                             minLeadingWidth: 10,
                                             dense: true,
-                                            contentPadding: EdgeInsets.zero,
                                             leading: ConstrainedBox(
                                               constraints: const BoxConstraints(
-                                                minWidth: 40,
-                                                minHeight: 40,
-                                                maxWidth: 40,
-                                                maxHeight: 40,
+                                                minWidth: 20,
+                                                minHeight: 20,
+                                                maxWidth: 20,
+                                                maxHeight: 20,
                                               ),
                                               child: Image.asset(
-                                                  "assets/images/kick.png",
+                                                  "assets/images/kickout.png",
                                                   fit: BoxFit.cover),
                                             ),
                                             onTap: () => {
@@ -191,8 +191,18 @@ class Helper {
                                         minVerticalPadding: 0.0,
                                         minLeadingWidth: 10,
                                         dense: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        leading: const Icon(Icons.logout),
+                                            contentPadding:const EdgeInsets.all(0),
+                                        leading:  ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                            maxWidth: 20,
+                                            maxHeight: 20,
+                                          ),
+                                          child: Image.asset(
+                                              "assets/images/allowtotalk.png",
+                                              fit: BoxFit.cover),
+                                        ),
                                         onTap: () => _updatePermission(
                                             participantsList[index]
                                                 .participant),

@@ -328,7 +328,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                                 maxHeight: 40,
                                               ),
                                               child: Image.asset(
-                                                  "assets/images/kick.png",
+                                                  "assets/images/kickout.png",
                                                   fit: BoxFit.cover),
                                             ),
                                             onTap: () => {
@@ -351,7 +351,17 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                         minLeadingWidth: 10,
                                         dense: true,
                                         contentPadding: EdgeInsets.zero,
-                                        leading: const Icon(Icons.logout),
+                                        leading: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            minWidth: 40,
+                                            minHeight: 40,
+                                            maxWidth: 40,
+                                            maxHeight: 40,
+                                          ),
+                                          child: Image.asset(
+                                              "assets/images/allowtotalk.png",
+                                              fit: BoxFit.cover),
+                                        ),
                                         onTap: () => _updatePermission(widget
                                             .participantList[index]
                                             .participant),

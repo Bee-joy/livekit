@@ -222,30 +222,34 @@ class _Room2PageState extends State<Room2Page> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          leading: const Icon(Icons.menu, color: Colors.blue),
+          leading: Image.asset(
+            "assets/images/menu.png",
+            height: 40,
+            width: 40,
+          ),
           title: const Align(
             alignment: Alignment.topLeft,
             child: Text(
               'Video Channel',
               style: TextStyle(
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                   fontSize: 16),
             ),
           ),
           actions: [
             Container(
-                margin: const EdgeInsets.only(right: 16),
+                margin: const EdgeInsets.only(right: 17),
                 child: Image.asset(
                   "assets/images/bell.png",
-                  width: 18,
-                  height: 18,
+                  width: 16,
+                  height: 16,
                 )),
           ],
           backgroundColor: Colors.white,
         ),
         body: Container(
-          color: Colors.grey[200],
+          color: const Color(0xFFe5e5e5),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -332,7 +336,7 @@ class _Room2PageState extends State<Room2Page> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 16, bottom: 16, left: 10),
-                              child: SizedBox(
+                              child: Container(
                                 height: 18,
                                 child: TextField(
                                   controller: widget._messageBody,

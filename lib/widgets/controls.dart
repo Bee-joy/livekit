@@ -306,11 +306,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
                 onPressed: _disableAudio,
-                child: IconButton(
-                  onPressed: _disableAudio,
-                  icon: const Icon(Icons.mic_none, color: Colors.white),
-                  tooltip: 'Mute Mic',
-                ),
+                child: Image.asset("assets/images/microphone.png"),
                 shape: const CircleBorder(),
                 elevation: 1.0,
                 fillColor: Colors.red,
@@ -337,14 +333,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
                 onPressed: _disableVideo,
-                child: IconButton(
-                  onPressed: _disableVideo,
-                  icon: const Icon(
-                    EvaIcons.video,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Mute Video',
-                ),
+                child: Image.asset("assets/images/video.png"),
                 shape: const CircleBorder(),
                 fillColor: Colors.red,
               )
@@ -370,14 +359,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
                 onPressed: _disableScreenShare,
-                child: IconButton(
-                  onPressed: _disableScreenShare,
-                  icon: const Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Unshare screen',
-                ),
+                child: Image.asset("assets/images/stopshare.png"),
                 shape: const CircleBorder(),
                 fillColor: Colors.red,
               )
@@ -385,14 +367,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
               RawMaterialButton(
                 constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
                 onPressed: _enableScreenShare,
-                child: IconButton(
-                  onPressed: _enableScreenShare,
-                  icon: const Icon(
-                    Icons.monitor,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Share screen',
-                ),
+                child: Image.asset("assets/images/sharescreen.png"),
                 shape: const CircleBorder(),
                 fillColor: Colors.red,
               ),
@@ -400,14 +375,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
           RawMaterialButton(
             constraints: const BoxConstraints(maxWidth: 40, maxHeight: 40),
             onPressed: _onTapDisconnect,
-            child: IconButton(
-              onPressed: _onTapDisconnect,
-              icon: const Icon(
-                Icons.call_end,
-                color: Colors.white,
-              ),
-              tooltip: 'Disconnect',
-            ),
+            child: Image.asset("assets/images/phone.png"),
             shape: const CircleBorder(),
             fillColor: Colors.red,
           ),

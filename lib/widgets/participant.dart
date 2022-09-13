@@ -220,7 +220,6 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Container(
                         decoration: const BoxDecoration(
-                            color: Colors.black,
                             borderRadius: BorderRadius.all(Radius.circular(5))),
                         width: 130,
                         height: 30,

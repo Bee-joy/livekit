@@ -250,136 +250,122 @@ class _Room2PageState extends State<Room2Page> {
         ),
         body: Container(
           color: const Color(0xFFe5e5e5),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
-                  child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Column(
-                        children: [
-                          participantTracks.isNotEmpty
-                              ? ParticipantWidget.widgetFor(
-                                  participantTracks.first, participantsList)
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 18, left: 18, right: 18, bottom: 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[800],
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10))),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.3,
-                                    child: Helper.getParticipantDetails(
-                                        context,
-                                        participantsList,
-                                        widget.room.localParticipant),
-                                  ),
-                                ),
-                          // SizedBox(
-                          //   height: 100,
-                          //   child: ListView.builder(
-                          //     scrollDirection: Axis.horizontal,
-                          //     itemCount: math.max(0, participantTracks.length - 1),
-                          //     itemBuilder: (BuildContext context, int index) => SizedBox(
-                          //       width: 100,
-                          //       height: 100,
-                          //       child: ParticipantWidget.widgetFor(
-                          //           participantTracks[index + 1], participantsList),
-                          //     ),
-                          //   ),
-                          // ),
-                          if (widget.room.localParticipant != null)
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ControlsWidget(widget.room,
-                                      widget.room.localParticipant!),
-                                ]),
-                        ],
-                      )),
-                ),
-                // Expanded(
-                //   child: Container(
-                //       color: Colors.grey[100],
-                //       height: MediaQuery.of(context).size.height * .3,
-                //       child: ListView.builder(
-                //           padding: const EdgeInsets.all(0.0),
-                //           itemCount: 150,
-                //           itemBuilder: (BuildContext context, index) {
-                //             return const Text("");
-                //           })
+          child: Column(
+            children: [
+              Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Column(
+                    children: [
+                      participantTracks.isNotEmpty
+                          ? ParticipantWidget.widgetFor(
+                              participantTracks.first, participantsList)
+                          : Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[800],
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10))),
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: Helper.getParticipantDetails(
+                                  context,
+                                  participantsList,
+                                  widget.room.localParticipant),
+                            ),
+                      // SizedBox(
+                      //   height: 100,
+                      //   child: ListView.builder(
+                      //     scrollDirection: Axis.horizontal,
+                      //     itemCount: math.max(0, participantTracks.length - 1),
+                      //     itemBuilder: (BuildContext context, int index) => SizedBox(
+                      //       width: 100,
+                      //       height: 100,
+                      //       child: ParticipantWidget.widgetFor(
+                      //           participantTracks[index + 1], participantsList),
+                      //     ),
+                      //   ),
+                      // ),
+                      if (widget.room.localParticipant != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ControlsWidget(
+                                    widget.room, widget.room.localParticipant!),
+                              ]),
+                        ),
+                    ],
+                  )),
+              // Expanded(
+              //   child: Container(
+              //       color: Colors.grey[100],
+              //       height: MediaQuery.of(context).size.height * .3,
+              //       child: ListView.builder(
+              //           padding: const EdgeInsets.all(0.0),
+              //           itemCount: 150,
+              //           itemBuilder: (BuildContext context, index) {
+              //             return const Text("");
+              //           })
 
-                //           ),
-                // ),
+              //           ),
+              // ),
 
-                Expanded(child: Container()),
-                Padding(
-                  padding: const EdgeInsets.only(left: 14, bottom: 10),
-                  child: Container(
-                    color: Colors.transparent,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(5)),
-                                border: Border.all(
-                                    color: Colors.grey.shade300, width: 1)),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16, bottom: 16, left: 10),
-                              child: Container(
-                                height: 18,
-                                child: TextField(
-                                  controller: widget._messageBody,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  onChanged: (value) {
-                                    setState(() {});
-                                  },
-                                  decoration: InputDecoration.collapsed(
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey[350], fontSize: 16),
-                                    hintText: 'Write Message',
-                                  ),
+              Expanded(child: Container()),
+              Padding(
+                padding: const EdgeInsets.only(left: 14, bottom: 10),
+                child: Container(
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5)),
+                              border: Border.all(
+                                  color: Colors.grey.shade300, width: 1)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16, bottom: 16, left: 10),
+                            child: SizedBox(
+                              height: 18,
+                              child: TextField(
+                                controller: widget._messageBody,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                                decoration: const InputDecoration.collapsed(
+                                  hintStyle: TextStyle(
+                                      color: Color(0xff9A989C), fontSize: 16),
+                                  hintText: 'Write Message',
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 14,
+                      ),
+                      const SizedBox(
+                        width: 14,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: RawMaterialButton(
+                          constraints:
+                              const BoxConstraints(minWidth: 10, minHeight: 10),
+                          onPressed: () {},
+                          child: Image.asset("assets/images/sendbutton.png"),
+                          shape: const CircleBorder(),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: RawMaterialButton(
-                            constraints: const BoxConstraints(
-                                minWidth: 10, minHeight: 10),
-                            onPressed: () {},
-                            fillColor: const Color(0xFFd1c9f3),
-                            child: const Icon(
-                              Icons.send,
-                              size: 24.0,
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.all(10.0),
-                            shape: const CircleBorder(),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );

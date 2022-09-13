@@ -149,97 +149,93 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   }
 
   @override
-  Widget build(BuildContext ctx) => Padding(
-        padding:
-            const EdgeInsets.only(top: 18, left: 18, right: 18, bottom: 10),
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          foregroundDecoration: BoxDecoration(
-            border: widget.participant.isSpeaking && !widget.isScreenShare
-                ? Border.all(
-                    width: 5,
-                    color: Colors.red,
-                  )
-                : null,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            color: Theme.of(ctx).cardColor,
-          ),
-          child: Stack(
-            children: [
-              // Video
-              InkWell(
-                onTap: () => setState(() => _visible = !_visible),
-                child: (activeVideoTrack != null && activeVideoTrack!.isActive)
-                    ? VideoTrackRenderer(
-                        activeVideoTrack!,
-                        fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                      )
-                    : const NoVideoWidget(),
-              ),
+  Widget build(BuildContext ctx) => Container(
+        height: MediaQuery.of(context).size.height * 0.3,
+        foregroundDecoration: BoxDecoration(
+          border: widget.participant.isSpeaking && !widget.isScreenShare
+              ? Border.all(
+                  width: 5,
+                  color: Colors.red,
+                )
+              : null,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          color: Theme.of(ctx).cardColor,
+        ),
+        child: Stack(
+          children: [
+            // Video
+            InkWell(
+              onTap: () => setState(() => _visible = !_visible),
+              child: (activeVideoTrack != null && activeVideoTrack!.isActive)
+                  ? VideoTrackRenderer(
+                      activeVideoTrack!,
+                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                    )
+                  : const NoVideoWidget(),
+            ),
 
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 5),
-                  child: InkWell(
-                    onTap: () => _showModalBottomSheet(context),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      width: 60,
-                      height: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Row(children: [
-                          const Icon(
-                            Icons.people,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            widget.participantList.length.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          )
-                        ]),
-                      ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, left: 5),
+                child: InkWell(
+                  onTap: () => _showModalBottomSheet(context),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    width: 60,
+                    height: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Row(children: [
+                        const Icon(
+                          Icons.people,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          widget.participantList.length.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      ]),
                     ),
                   ),
                 ),
               ),
+            ),
 
-              // Bottom bar
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        width: 130,
-                        height: 30,
-                        child: Row(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              UserMetaData.fromJson(
-                                      jsonDecode(widget.participant.metadata!))
-                                  .name
-                                  .toString(),
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          )
-                        ]))
-                  ]),
-                ),
+            // Bottom bar
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      width: 130,
+                      height: 30,
+                      child: Row(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            UserMetaData.fromJson(
+                                    jsonDecode(widget.participant.metadata!))
+                                .name
+                                .toString(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        )
+                      ]))
+                ]),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 

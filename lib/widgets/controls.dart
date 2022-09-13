@@ -15,6 +15,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:livekit_client/livekit_client.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ControlsWidget extends StatefulWidget {
   //
@@ -235,15 +237,40 @@ class _ControlsWidgetState extends State<ControlsWidget> {
     });
     handRaise = !handRaise;
 
-    Fluttertoast.showToast(
-        msg:
+    showTopSnackBar(
+      context,
+      const CustomSnackBar.success(
+        // icon: Padding(
+        //   padding: const EdgeInsets.all(10),
+        //   child: RawMaterialButton(
+        //     constraints: const BoxConstraints(maxWidth: 30, maxHeight: 30),
+        //     onPressed: () {},
+        //     child: IconButton(
+        //       onPressed: () {},
+        //       icon: const Icon(
+        //         Icons.check,
+        //         color: Colors.black,
+        //         size: 18,
+        //       ),
+        //     ),
+        //     shape: const CircleBorder(),
+        //     elevation: 1.0,
+        //     fillColor: Colors.white,
+        //   ),
+        // ),
+        message:
             "You raised your hand! We will let the moderators know you want to talk...",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
-        fontSize: 14.0);
+      ),
+    );
+    // Fluttertoast.showToast(
+    //     msg:
+    //         "You raised your hand! We will let the moderators know you want to talk...",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.TOP,
+    //     timeInSecForIosWeb: 2,
+    //     backgroundColor: Colors.white,
+    //     textColor: Colors.black,
+    //     fontSize: 14.0);
 
     await apiService.updateMetadata(_metadata!.userId!, participant.room.name!,
         participant.identity, handRaise);

@@ -156,61 +156,95 @@ class Helper {
                                   Popup(
                                     menuList: [
                                       PopupMenuItem(
-                                          padding:
-                                              const EdgeInsets.only(left: 16),
-                                          child: ListTile(
-                                            contentPadding:const EdgeInsets.all(0),
-                                            horizontalTitleGap: 10,
-                                            minLeadingWidth: 10,
-                                            dense: true,
-                                            leading: ConstrainedBox(
-                                              constraints: const BoxConstraints(
-                                                minWidth: 20,
-                                                minHeight: 20,
-                                                maxWidth: 20,
-                                                maxHeight: 20,
-                                              ),
-                                              child: Image.asset(
-                                                  "assets/images/kickout.png",
-                                                  fit: BoxFit.cover),
-                                            ),
+                                          height: 0,
+                                          padding: EdgeInsets.zero,
+                                          child: InkWell(
                                             onTap: () => {
                                               participantsList.remove(index),
                                               _kickOut(participantsList[index]
                                                   .participant)
                                             },
-                                            title: const Text(
-                                              "Kick out",
-                                              style:
-                                                  TextStyle(color: Colors.red),
+                                            child: SizedBox(
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14, top: 8),
+                                                    child: ConstrainedBox(
+                                                      constraints:
+                                                          const BoxConstraints(
+                                                        minWidth: 20,
+                                                        minHeight: 20,
+                                                        maxWidth: 20,
+                                                        maxHeight: 20,
+                                                      ),
+                                                      child: Image.asset(
+                                                          "assets/images/kickout.png",
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14, top: 8),
+                                                    child: Text(
+                                                      "Kick out",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.red[800]),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           )),
                                       PopupMenuItem(
-                                          child: ListTile(
-                                        horizontalTitleGap: 10,
-                                        minVerticalPadding: 0.0,
-                                        minLeadingWidth: 10,
-                                        dense: true,
-                                            contentPadding:const EdgeInsets.all(0),
-                                        leading:  ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            minWidth: 20,
-                                            minHeight: 20,
-                                            maxWidth: 20,
-                                            maxHeight: 20,
-                                          ),
-                                          child: Image.asset(
-                                              "assets/images/allowtotalk.png",
-                                              fit: BoxFit.cover),
-                                        ),
-                                        onTap: () => _updatePermission(
-                                            participantsList[index]
-                                                .participant),
-                                        title: const Text(
-                                          "Allow to talk",
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                      )),
+                                          height: 0,
+                                          padding: EdgeInsets.zero,
+                                          child: InkWell(
+                                            onTap: () => _updatePermission(
+                                                participantsList[index]
+                                                    .participant),
+                                            child: SizedBox(
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14,
+                                                            top: 14,
+                                                            bottom: 8),
+                                                    child: ConstrainedBox(
+                                                      constraints:
+                                                          const BoxConstraints(
+                                                        minWidth: 20,
+                                                        minHeight: 20,
+                                                        maxWidth: 20,
+                                                        maxHeight: 20,
+                                                      ),
+                                                      child: Image.asset(
+                                                          "assets/images/allowtotalk.png",
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14,
+                                                            top: 14,
+                                                            bottom: 8),
+                                                    child: Text(
+                                                      "Allow to talk",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .purple[800]),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )),
                                     ],
                                     icon: const Icon(Icons.more_vert),
                                   ), // icon-2

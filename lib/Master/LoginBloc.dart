@@ -43,7 +43,7 @@ class LoginBloc {
             .then((value) => {
                   room
                       .connect(
-                          'ws://ec2-43-205-240-39.ap-south-1.compute.amazonaws.com:7880',
+                          'ws://ec2-43-205-240-70.ap-south-1.compute.amazonaws.com:7880',
                           value.data!.token!,
                           roomOptions: const RoomOptions(
                             defaultScreenShareCaptureOptions:

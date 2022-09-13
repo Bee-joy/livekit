@@ -20,6 +20,7 @@ class ControlsWidget extends StatefulWidget {
   //
   final Room room;
   final LocalParticipant participant;
+  bool handrise = false;
 
   ControlsWidget(
     this.room,
@@ -229,13 +230,16 @@ class _ControlsWidgetState extends State<ControlsWidget> {
   }
 
   void _raiseHand() async {
+    setState(() {
+      handRaise = true;
+    });
     handRaise = !handRaise;
 
     Fluttertoast.showToast(
         msg:
             "You raised your hand! We will let the moderators know you want to talk...",
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.TOP,
         timeInSecForIosWeb: 2,
         backgroundColor: Colors.white,
         textColor: Colors.black,
@@ -259,14 +263,14 @@ class _ControlsWidgetState extends State<ControlsWidget> {
                 onPressed: _raiseHand,
                 child: IconButton(
                   onPressed: _raiseHand,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.back_hand_outlined,
-                    color: Colors.blue,
+                    color: handRaise ? Colors.white : Colors.purple[700],
                   ),
                   tooltip: 'Raise Hand',
                 ),
                 shape: const CircleBorder(),
-                fillColor: Colors.grey[200],
+                fillColor: handRaise ? Colors.purple[800] : Colors.grey[200],
               ),
             ),
           const SizedBox(width: 3),

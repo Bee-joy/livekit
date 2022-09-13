@@ -214,22 +214,29 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
 
               // Bottom bar
               Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...extraWidgets(widget.isScreenShare),
-                    ParticipantInfoWidget(
-                      title: UserMetaData.fromJson(
-                              jsonDecode(widget.participant.metadata!))
-                          .name,
-                      audioAvailable: firstAudioPublication?.muted == true &&
-                          firstAudioPublication?.subscribed == true,
-                      connectionQuality: widget.participant.connectionQuality,
-                      isScreenShare: widget.isScreenShare,
-                    ),
-                  ],
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        width: 130,
+                        height: 30,
+                        child: Row(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              UserMetaData.fromJson(
+                                      jsonDecode(widget.participant.metadata!))
+                                  .name
+                                  .toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          )
+                        ]))
+                  ]),
                 ),
               ),
             ],
@@ -313,24 +320,9 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                   Popup(
                                     menuList: [
                                       PopupMenuItem(
-                                          padding:
-                                              const EdgeInsets.only(left: 16),
-                                          child: ListTile(
-                                            horizontalTitleGap: 10,
-                                            minLeadingWidth: 10,
-                                            dense: true,
-                                            contentPadding: EdgeInsets.zero,
-                                            leading: ConstrainedBox(
-                                              constraints: const BoxConstraints(
-                                                minWidth: 40,
-                                                minHeight: 40,
-                                                maxWidth: 40,
-                                                maxHeight: 40,
-                                              ),
-                                              child: Image.asset(
-                                                  "assets/images/kickout.png",
-                                                  fit: BoxFit.cover),
-                                            ),
+                                          height: 0,
+                                          padding: EdgeInsets.zero,
+                                          child: InkWell(
                                             onTap: () => {
                                               widget.participantList
                                                   .remove(index),
@@ -338,41 +330,92 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                                   .participantList[index]
                                                   .participant)
                                             },
-                                            title: const Text(
-                                              "Kick out",
-                                              style:
-                                                  TextStyle(color: Colors.red),
+                                            child: SizedBox(
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14, top: 8),
+                                                    child: ConstrainedBox(
+                                                      constraints:
+                                                          const BoxConstraints(
+                                                        minWidth: 20,
+                                                        minHeight: 20,
+                                                        maxWidth: 20,
+                                                        maxHeight: 20,
+                                                      ),
+                                                      child: Image.asset(
+                                                          "assets/images/kickout.png",
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14, top: 8),
+                                                    child: Text(
+                                                      "Kick out",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.red[800]),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           )),
                                       PopupMenuItem(
-                                          child: ListTile(
-                                        horizontalTitleGap: 10,
-                                        minVerticalPadding: 0.0,
-                                        minLeadingWidth: 10,
-                                        dense: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        leading: ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            minWidth: 40,
-                                            minHeight: 40,
-                                            maxWidth: 40,
-                                            maxHeight: 40,
-                                          ),
-                                          child: Image.asset(
-                                              "assets/images/allowtotalk.png",
-                                              fit: BoxFit.cover),
-                                        ),
-                                        onTap: () => _updatePermission(widget
-                                            .participantList[index]
-                                            .participant),
-                                        title: const Text(
-                                          "Allow to talk",
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                      )),
+                                          height: 0,
+                                          padding: EdgeInsets.zero,
+                                          child: InkWell(
+                                            onTap: () => _updatePermission(
+                                                widget.participantList[index]
+                                                    .participant),
+                                            child: SizedBox(
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14,
+                                                            top: 14,
+                                                            bottom: 8),
+                                                    child: ConstrainedBox(
+                                                      constraints:
+                                                          const BoxConstraints(
+                                                        minWidth: 20,
+                                                        minHeight: 20,
+                                                        maxWidth: 20,
+                                                        maxHeight: 20,
+                                                      ),
+                                                      child: Image.asset(
+                                                          "assets/images/allowtotalk.png",
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 14,
+                                                            top: 14,
+                                                            bottom: 8),
+                                                    child: Text(
+                                                      "Allow to talk",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .purple[800]),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )),
                                     ],
                                     icon: const Icon(Icons.more_vert),
-                                  ), // icon-2
+                                  ),
+
+                                /// icon-2
                               ],
                             ),
                           );
@@ -484,6 +527,7 @@ class Popup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       itemBuilder: ((context) => menuList),
       icon: icon,
     );

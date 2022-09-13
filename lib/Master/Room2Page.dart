@@ -235,7 +235,7 @@ class _Room2PageState extends State<Room2Page> {
           ),
           actions: [
             Container(
-                margin: const EdgeInsets.only(right: 12),
+                margin: const EdgeInsets.only(right: 16),
                 child: Image.asset(
                   "assets/images/bell.png",
                   width: 18,
@@ -333,7 +333,7 @@ class _Room2PageState extends State<Room2Page> {
                               padding: const EdgeInsets.only(
                                   top: 16, bottom: 16, left: 10),
                               child: SizedBox(
-                                height: 20,
+                                height: 18,
                                 child: TextField(
                                   controller: widget._messageBody,
                                   textCapitalization:

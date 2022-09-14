@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:collection/collection.dart';
+import 'package:dipesh/Enums/Enum.dart';
 import 'package:dipesh/Model/UserMetaData.dart';
 import 'package:dipesh/Model/participantoptions.dart';
 import 'package:flutter/material.dart';
@@ -11,22 +12,14 @@ import 'participant_info.dart';
 
 abstract class ParticipantWidget extends StatefulWidget {
   // Convenience method to return relevant widget for participant
-  static ParticipantWidget widgetFor(
+  static ParticipantWidget widgetFor(List<ParticipantTrack> participantTracks,
       ParticipantTrack participantTrack, List<ParticipantOption> list) {
-    if (participantTrack.participant is LocalParticipant) {
-      return LocalParticipantWidget(
-          list,
-          participantTrack.participant as LocalParticipant,
-          participantTrack.videoTrack,
-          participantTrack.isScreenShare);
-    } else if (participantTrack.participant is RemoteParticipant) {
-      return RemoteParticipantWidget(
-          list,
-          participantTrack.participant as RemoteParticipant,
-          participantTrack.videoTrack,
-          participantTrack.isScreenShare);
-    }
-    throw UnimplementedError('Unknown participant type');
+    return LocalParticipantWidget(
+        list,
+        participantTracks,
+        participantTrack.participant,
+        participantTrack.videoTrack,
+        participantTrack.isScreenShare);
   }
 
   // Must be implemented by child class
@@ -43,15 +36,20 @@ abstract class ParticipantWidget extends StatefulWidget {
 
 class LocalParticipantWidget extends ParticipantWidget {
   @override
-  final LocalParticipant participant;
+  final Participant participant;
   @override
   final VideoTrack? videoTrack;
+
+  @override
+  final List<ParticipantTrack>? participantTracks;
+
   @override
   final bool isScreenShare;
   @override
   final List<ParticipantOption> participantList;
   LocalParticipantWidget(
     this.participantList,
+    this.participantTracks,
     this.participant,
     this.videoTrack,
     this.isScreenShare, {
@@ -91,6 +89,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   VideoTrack? get activeVideoTrack;
   TrackPublication? get videoPublication;
   TrackPublication? get firstAudioPublication;
+  VideoTrack? get activeSecondaryVideoTrack;
 
   @override
   void initState() {
@@ -149,93 +148,112 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   }
 
   @override
-  Widget build(BuildContext ctx) => Container(
-        height: MediaQuery.of(context).size.height * 0.3,
-        foregroundDecoration: BoxDecoration(
-          border: widget.participant.isSpeaking && !widget.isScreenShare
-              ? Border.all(
-                  width: 5,
-                  color: Colors.red,
-                )
-              : null,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-          color: Theme.of(ctx).cardColor,
-        ),
-        child: Stack(
-          children: [
-            // Video
-            InkWell(
-              onTap: () => setState(() => _visible = !_visible),
-              child: (activeVideoTrack != null && activeVideoTrack!.isActive)
-                  ? VideoTrackRenderer(
-                      activeVideoTrack!,
-                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                    )
-                  : const NoVideoWidget(),
-            ),
+  Widget build(BuildContext ctx) => Padding(
+        padding:
+            const EdgeInsets.only(top: 18, left: 18, right: 18, bottom: 10),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          foregroundDecoration: BoxDecoration(
+            border: widget.participant.isSpeaking && !widget.isScreenShare
+                ? Border.all(
+                    width: 5,
+                    color: Colors.red,
+                  )
+                : null,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            color: Theme.of(ctx).cardColor,
+          ),
+          child: Stack(
+            children: [
+              // Video
+              InkWell(
+                onTap: () => setState(() => _visible = !_visible),
+                child: (activeVideoTrack != null && activeVideoTrack!.isActive)
+                    ? VideoTrackRenderer(
+                        activeVideoTrack!,
+                        fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                      )
+                    : const NoVideoWidget(),
+              ),
 
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10, left: 5),
-                child: InkWell(
-                  onTap: () => _showModalBottomSheet(context),
+              Align(
+                  alignment: Alignment.bottomRight,
                   child: Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    width: 60,
-                    height: 30,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          widget.participantList.length.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        )
-                      ]),
+                      height: 120,
+                      width: 100,
+                      child: Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 5),
+                          child: (activeSecondaryVideoTrack != null &&
+                                  activeSecondaryVideoTrack!.isActive)
+                              ? VideoTrackRenderer(
+                                  activeSecondaryVideoTrack!,
+                                  fit: RTCVideoViewObjectFit
+                                      .RTCVideoViewObjectFitCover,
+                                )
+                              : const NoVideoWidget()))),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 5),
+                  child: InkWell(
+                    onTap: () => _showModalBottomSheet(context),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      width: 60,
+                      height: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.people,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            widget.participantList.length.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        ]),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // Bottom bar
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      width: 130,
-                      height: 30,
-                      child: Row(children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            UserMetaData.fromJson(
-                                    jsonDecode(widget.participant.metadata!))
-                                .name
-                                .toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        )
-                      ]))
-                ]),
+              // Bottom bar
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        width: 130,
+                        height: 30,
+                        child: Row(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              UserMetaData.fromJson(
+                                      jsonDecode(widget.participant.metadata!))
+                                  .name
+                                  .toString(),
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          )
+                        ]))
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
@@ -309,7 +327,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                             .participantList[index].raiseHand!
                                         ? const Icon(Icons.back_hand_outlined)
                                         : const Text("")),
-                                if (metadata.roles!.contains('teacher') &&
+                                if (metadata.roles!.contains("teacher") &&
                                     widget.participantList[index].name !=
                                         metadata.name)
                                   Popup(
@@ -319,8 +337,6 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                                           padding: EdgeInsets.zero,
                                           child: InkWell(
                                             onTap: () => {
-                                              widget.participantList
-                                                  .remove(index),
                                               _kickOut(widget
                                                   .participantList[index]
                                                   .participant)
@@ -424,18 +440,56 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
 
 class _LocalParticipantWidgetState
     extends _ParticipantWidgetState<LocalParticipantWidget> {
+  VideoTrack? getSecondaryVideoTrack(List<ParticipantTrack>? videoTracks) {
+    VideoTrack? track;
+    if (!(videoTracks == null || videoTracks.isEmpty)) {
+      for (int i = videoTracks.length - 1; i >= 0; i--) {
+        ParticipantTrack currentTrack = videoTracks[i];
+        UserMetaData metadata = UserMetaData.fromJson(
+            jsonDecode(currentTrack.participant.metadata!));
+        if (!metadata.roles!.contains("teacher") &&
+            currentTrack.participant.isCameraEnabled()) {
+          track = currentTrack.videoTrack;
+          break;
+        }
+      }
+    }
+    return track;
+  }
+
+  VideoTrack? getPrimaryVideoTrack(List<ParticipantTrack>? videoTracks) {
+    VideoTrack? track;
+    if (!(videoTracks == null || videoTracks.isEmpty)) {
+      for (int i = 0; i < videoTracks.length; i++) {
+        ParticipantTrack currentTrack = videoTracks[i];
+        UserMetaData metadata = UserMetaData.fromJson(
+            jsonDecode(currentTrack.participant.metadata!));
+        if (metadata.roles!.contains("teacher") &&
+            currentTrack.participant.isCameraEnabled()) {
+          return currentTrack.videoTrack;
+        }
+      }
+    }
+    return track;
+  }
+
   @override
-  LocalTrackPublication<LocalVideoTrack>? get videoPublication =>
+  TrackPublication<Track>? get videoPublication =>
       widget.participant.videoTracks
           .where((element) => element.sid == widget.videoTrack?.sid)
           .firstOrNull;
 
   @override
-  LocalTrackPublication<LocalAudioTrack>? get firstAudioPublication =>
+  TrackPublication<Track>? get firstAudioPublication =>
       widget.participant.audioTracks.firstOrNull;
 
   @override
-  VideoTrack? get activeVideoTrack => widget.videoTrack;
+  VideoTrack? get activeVideoTrack =>
+      getPrimaryVideoTrack(widget.participantTracks);
+
+  @override
+  VideoTrack? get activeSecondaryVideoTrack =>
+      getSecondaryVideoTrack(widget.participantTracks);
 }
 
 class _RemoteParticipantWidgetState
@@ -474,6 +528,9 @@ class _RemoteParticipantWidgetState
           ],
         ),
       ];
+
+  @override
+  VideoTrack? get activeSecondaryVideoTrack => null;
 }
 
 class RemoteTrackPublicationMenuWidget extends StatelessWidget {

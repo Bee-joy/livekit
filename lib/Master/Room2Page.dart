@@ -28,7 +28,7 @@ class Room2Page extends StatefulWidget {
 }
 
 class _Room2PageState extends State<Room2Page> {
-  ApiService apiService = new ApiService();
+  ApiService apiService = ApiService();
   //
   List<ParticipantTrack> participantTracks = [];
   List<ParticipantOption> participantsList = [];
@@ -259,7 +259,7 @@ class _Room2PageState extends State<Room2Page> {
                   child: Column(
                     children: [
                       participantTracks.isNotEmpty
-                          ? ParticipantWidget.widgetFor(
+                          ? ParticipantWidget.widgetFor(participantTracks,
                               participantTracks.first, participantsList)
                           : Container(
                               decoration: BoxDecoration(

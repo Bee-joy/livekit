@@ -349,7 +349,7 @@ class _Room2PageState extends State<Room2Page> {
                         ),
                       ),
                       const SizedBox(
-                        width: 14,
+                        width: 10,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
@@ -357,7 +357,13 @@ class _Room2PageState extends State<Room2Page> {
                           constraints:
                               const BoxConstraints(minWidth: 10, minHeight: 10),
                           onPressed: () {},
-                          child: Image.asset("assets/images/sendbutton.png"),
+                          fillColor: const Color(0xFFd1c9f3),
+                          child: const Icon(
+                            Icons.send,
+                            size: 25.0,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.all(10.0),
                           shape: const CircleBorder(),
                         ),
                       )

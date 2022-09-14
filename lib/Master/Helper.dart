@@ -162,7 +162,8 @@ class Helper {
                                             onTap: () => {
                                               participantsList.remove(index),
                                               _kickOut(participantsList[index]
-                                                  .participant)
+                                                  .participant),
+                                              Navigator.pop(context)
                                             },
                                             child: SizedBox(
                                               child: Row(
@@ -203,9 +204,12 @@ class Helper {
                                           height: 0,
                                           padding: EdgeInsets.zero,
                                           child: InkWell(
-                                            onTap: () => _updatePermission(
-                                                participantsList[index]
-                                                    .participant),
+                                            onTap: () => {
+                                              _updatePermission(
+                                                  participantsList[index]
+                                                      .participant),
+                                              Navigator.pop(context)
+                                            },
                                             child: SizedBox(
                                               child: Row(
                                                 children: [

@@ -265,7 +265,7 @@ class _Room2PageState extends State<Room2Page> {
                               decoration: BoxDecoration(
                                   color: Colors.grey[800],
                                   borderRadius: const BorderRadius.all(
-                                      Radius.circular(10))),
+                                      Radius.circular(4))),
                               height: MediaQuery.of(context).size.height * 0.3,
                               child: Helper.getParticipantDetails(
                                   context,

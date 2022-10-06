@@ -39,12 +39,10 @@ class LoginBloc {
         User user = await apiService.getUser(event.username);
 
         await apiService
-            .getToken(user.data!.userId!, "6315a1993fbbdd1bcffasb741")
+            .getToken(user.data!.userId!, "6315a1993fbbdd1bcffab741")
             .then((value) => {
                   room
-                      .connect(
-                          'ws://ec2-13-233-88-86.ap-south-1.compute.amazonaws.com:7880',
-                          value.data!.token!,
+                      .connect('ws://3.111.248.163:7880', value.data!.token!,
                           roomOptions: const RoomOptions(
                             defaultScreenShareCaptureOptions:
                                 ScreenShareCaptureOptions(
@@ -52,6 +50,7 @@ class LoginBloc {
                           ))
                       .onError((error, stackTrace) =>
                           loginSink.add({'status': 'failed'})),
+                  loginSink.add({'status': 'success'}),
                   Navigator.push<void>(
                       event.context,
                       MaterialPageRoute(
